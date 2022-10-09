@@ -2,7 +2,7 @@ name: leaguetool-server Image CI
 
 on:
   push:
-    branches: [ "dev" ]
+    branches: [ "master" ]
     
 jobs:
   # build 任务的名称 可以叫build2  test3
