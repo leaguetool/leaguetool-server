@@ -28,7 +28,7 @@ jobs:
     - name: Set up Docker Buildx
       # 初始化构建环境
       uses: docker/setup-buildx-action@v2
-    - name: Build and push
+    - name: Build and push latest
       # 开始构建 在当前目录下找Dockerfile,也可以指定Dockerfile位置
       uses: docker/build-push-action@v3
       with:
@@ -39,15 +39,14 @@ jobs:
         # tag
         tags: ${{ secrets.DOCKER_REGISTER }}/leaguetool-server:latest
       # ssh远程连接服务器
-    #- name: SSH REMOTE
-    #  uses: appleboy/ssh-action@master
-    #  with:
-    #    host: ${{ secrets.HOST}}
-    #    username: ${{ secrets.SSH_USERNAME }}
-        # 使用密码不用key
-    #    password: ${{ secrets.SSH_PASSWORD }}
-    #    port: ${{ secrets.PORT }}
-        # | 执行多行脚本命令。run.sh中可以写删除 拉取 构建镜像...
-    #    script: |
-     #     cd /home/wxserver
-     #     sh run.sh
+    - name: SSH REMOTE
+      uses: appleboy/ssh-action@master
+      with:
+       host: ${{ secrets.SSH_HOST}}
+       username: ${{ secrets.SSH_USERNAME }}
+       password: ${{ secrets.SSH_PASSWORD }}
+       port: ${{ secrets.SSH_PORT }}
+        #| 执行多行脚本命令。 拉取 运行镜像...
+       script: |
+         docker pull ${{ secrets.DOCKER_REGISTER }}/leaguetool-server:latest
+         docker run -d --network=host --restart=always --name=leaguetool-server ${{ secrets.DOCKER_REGISTER }}/leaguetool-server:latest
