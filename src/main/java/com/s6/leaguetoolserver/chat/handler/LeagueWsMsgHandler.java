@@ -2,7 +2,10 @@ package com.s6.leaguetoolserver.chat.handler;
 
 import cn.hutool.core.util.IdUtil;
 import com.alibaba.fastjson.JSON;
+import com.s6.leaguetoolserver.chat.commen.ChatUtils;
+import com.s6.leaguetoolserver.chat.commen.HotUtils;
 import com.s6.leaguetoolserver.chat.config.LeagueServerConfig;
+import com.s6.leaguetoolserver.chat.packages.BaseInfo;
 import com.s6.leaguetoolserver.chat.packages.OtherPak;
 import com.s6.leaguetoolserver.chat.packages.Package;
 import com.s6.leaguetoolserver.chat.packages.enums.MessageType;
@@ -39,8 +42,12 @@ public class LeagueWsMsgHandler implements IWsMsgHandler {
     public HttpResponse handshake(HttpRequest request, HttpResponse httpResponse, ChannelContext channelContext) throws Exception {
         String clientip = request.getClientIp();
         String uuid = IdUtil.objectId();
-        String myname = request.getParam("name");
-        Tio.bindUser(channelContext, myname);
+        String uid = request.getParam("uid");
+        //如果是游客就使用生成的uuid
+        if("tourist".equals(uid)){
+            uid = uuid;
+        }
+        Tio.bindUser(channelContext, uid);
         Tio.bindToken(channelContext, uuid);
         log.info("收到来自{}的ws握手包\r\n{}", clientip, request.toString());
         return httpResponse;
@@ -50,7 +57,6 @@ public class LeagueWsMsgHandler implements IWsMsgHandler {
      * @param httpResponse
      * @param channelContext
      * @throws Exception
-     * @author tanyaowu
      */
     @Override
     public void onAfterHandshaked(HttpRequest httpRequest, HttpResponse httpResponse, ChannelContext channelContext) throws Exception {
@@ -60,10 +66,6 @@ public class LeagueWsMsgHandler implements IWsMsgHandler {
         }
         //绑定到群组，后面会有群发
         Tio.bindGroup(channelContext, region);
-        //获取当前大区有多少人在开黑大厅
-        int i = Tio.groupCount(channelContext.tioConfig, region);
-
-
 
         String token = channelContext.getToken();
         Package pack = new Package();
@@ -73,12 +75,17 @@ public class LeagueWsMsgHandler implements IWsMsgHandler {
         WsResponse wsResponse = WsResponse.fromText(JSON.toJSONString(pack), LeagueServerConfig.CHARSET);
         //发送给用户的id
         Tio.sendToToken(channelContext.tioConfig,token,wsResponse);
-//        int count = Tio.getAllChannelContexts(channelContext.tioConfig).getObj().size();
-//        String msg = "{name:'admin',message:'" + channelContext.userid + " 进来了，共【" + count + "】人在线" + "'}";
-        //用tio-websocket，服务器发送到客户端的Packet都是WsResponse
-//        WsResponse wsResponse = WsResponse.fromText(msg, LeagueServerConfig.CHARSET);
-//        //群发
-//        Tio.sendToGroup(channelContext.tioConfig, region, wsResponse);
+        //服务器的总连接的用户
+//      int count = Tio.getAllChannelContexts(channelContext.tioConfig).getObj().size();
+        //获取当前大区有多少人在开黑大厅
+        int i = Tio.groupCount(channelContext.tioConfig, region);
+        int hot = HotUtils.getHot(i);
+        LeagueOtherHandler leagueOtherHandler = (LeagueOtherHandler) handlerMap.get(MessageType.OTHER);
+        //发送给大区的人
+        leagueOtherHandler.send(channelContext, OtherPakType.AREA_HOT,hot);
+
+        //发送基础信息
+        ChatUtils.initBaseInfo(channelContext);
     }
     /**
      * 字节消息（binaryType = arraybuffer）过来后会走这个方法
