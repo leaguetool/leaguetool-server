@@ -44,6 +44,8 @@ public class LeagueChatHandler implements IWsMsgHandler {
         //聊天
         Package aPackage = JSON.parseObject(text, Package.class);
         ChatMessage chatMessage = JSON.parseObject(aPackage.getData(), ChatMessage.class);
+        String content = chatMessage.getContent();
+        chatMessage.setContent(content.replaceAll("\\[害怕\\]", "<emoji>#icon--scared</emoji>"));
         chatMessage.setId(IdUtil.objectId());
         aPackage.setData(JSON.toJSONString(chatMessage));
         WsResponse wsResponse = WsResponse.fromText(JSON.toJSONString(aPackage), LeagueServerConfig.CHARSET);
