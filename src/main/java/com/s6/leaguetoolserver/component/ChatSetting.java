@@ -1,5 +1,8 @@
 package com.s6.leaguetoolserver.component;
 
+import com.alibaba.nacos.api.config.ConfigType;
+import com.alibaba.nacos.api.config.annotation.NacosConfigurationProperties;
+import com.s6.leaguetoolserver.component.emoji.Emoji;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
@@ -9,16 +12,9 @@ import java.util.List;
 @Data
 @Component
 @ConfigurationProperties(prefix = "chatsetting")
+@NacosConfigurationProperties(dataId = "leaguetool", prefix = "chatsetting", type = ConfigType.YAML, autoRefreshed = true)
 public class ChatSetting {
 
     private List<Emoji> emoji;
 
-    @Data
-   static class Emoji {
-       private String title;
-
-       private String text;
-
-       private List<Emoji> data;
-    }
 }

@@ -9,7 +9,7 @@ VOLUME /tmp
 # 应用构建成功后的jar文件被复制到镜像内，名字也改成了app.jar
 ADD target/leaguetool-server-0.0.1-SNAPSHOT.jar leaguetool-server.jar
 # 启动容器时的进程
-ENTRYPOINT ["java","-jar","/leaguetool-server.jar"]
+ENTRYPOINT ["java","-jar","/leaguetool-server.jar --spring.profiles.active=prod"]
 # 暴露9999端口
 EXPOSE 9999
 # 暴露10001端口

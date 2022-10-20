@@ -1,0 +1,178 @@
+server:
+  port: 9999
+
+nacos:
+  config:
+    server-addr: 49.232.68.210
+    #允许nacos上的配置优先于本地配置
+    remote-first: true
+    bootstrap:
+      #开启配置预加载功能
+      enable: true
+      log-enable: true
+    group: DEFAULT_GROUP
+    # 主配置 data-id
+    data-id: leaguetool
+    # 主配置 配置文件类型
+    type: yaml
+    # 主配置 最大重试次数
+    max-retry: 10
+    # 主配置 开启自动刷新
+    auto-refresh: true
+    #命名空间id
+    namespace: 3823643f-f4a5-4578-a4db-936aad3840a4
+    # 用户名
+    username: leaguetool
+    # 密码
+    password: leaguetool@2022
+
+notice: '公告：本工具用于英雄联盟玩家开黑寻找队友  <br/>    qq群：810322958'
+
+admininfo:
+  users:
+    - name: 风车车的猫尾饼
+      uid: 3027282745
+      avatar: https://game.gtimg.cn/images/lol/act/img/profileicon/29.png
+
+chatsetting:
+  emoji:
+    - title: '#icon--scared'
+      data:
+        - emoji: '#icon--astonished'
+          text: 中毒
+        - emoji: '#icon--angel'
+          text: 天使
+        - emoji: '#icon--cool'
+          text: 酷
+        - emoji: '#icon--confused'
+          text: 迷茫
+        - emoji: '#icon--angry'
+          text: 生气
+        - emoji: '#icon--dizzy'
+          text: 头晕
+        - emoji: '#icon--cry'
+          text: 哭
+        - emoji: '#icon--expressionless'
+          text: 面无表情
+        - emoji: '#icon--devil'
+          text: 魔鬼
+        - emoji: '#icon--flushed'
+          text: 懵B
+        - emoji: '#icon--happy'
+          text: 开心
+        - emoji: '#icon--injury'
+          text: 受伤
+        - emoji: '#icon--joy'
+          text: 笑哭
+        - emoji: '#icon--in-love'
+          text: 热恋
+        - emoji: '#icon--kiss'
+          text: 亲吻
+        - emoji: '#icon--mask'
+          text: 口罩
+        - emoji: '#icon--mute'
+          text: 静音
+        - emoji: '#icon--sad'
+          text: 难过
+        - emoji: '#icon--scared'
+          text: 害怕
+        - emoji: '#icon--secret'
+          text: 闭嘴
+        - emoji: '#icon--sick'
+          text: 生病
+        - emoji: '#icon--smile'
+          text: 笑
+        - emoji: '#icon--sleeping'
+          text: 睡觉
+        - emoji: '#icon--smiling'
+          text: 眼红
+        - emoji: '#icon--sweat'
+          text: 流汗
+        - emoji: '#icon--surprised'
+          text: 震惊
+        - emoji: '#icon--smirking'
+          text: 奸笑
+        - emoji: '#icon--thinking'
+          text: 思考
+        - emoji: '#icon--tired'
+          text: 疲惫
+        - emoji: '#icon--tongue'
+          text: 吐舌
+        - emoji: '#icon--unamused'
+          text: 斜眼
+        - emoji: '#icon--wink'
+          text: 眨眼
+        - emoji: '#icon--vomiting'
+          text: 呕吐
+        - emoji: '#icon--zombie'
+          text: 僵尸
+    - title: '#icon--astonished'
+      data:
+        - emoji: '#icon--angel'
+          text: 天使
+        - emoji: '#icon--astonished'
+          text: 中毒
+        - emoji: '#icon--cool'
+          text: 酷
+        - emoji: '#icon--confused'
+          text: 迷茫
+        - emoji: '#icon--angry'
+          text: 生气
+        - emoji: '#icon--dizzy'
+          text: 头晕
+        - emoji: '#icon--cry'
+          text: 哭
+        - emoji: '#icon--expressionless'
+          text: 面无表情
+        - emoji: '#icon--devil'
+          text: 魔鬼
+        - emoji: '#icon--flushed'
+          text: 懵B
+        - emoji: '#icon--happy'
+          text: 开心
+        - emoji: '#icon--injury'
+          text: 受伤
+        - emoji: '#icon--joy'
+          text: 笑哭
+        - emoji: '#icon--in-love'
+          text: 热恋
+        - emoji: '#icon--kiss'
+          text: 亲吻
+        - emoji: '#icon--mask'
+          text: 口罩
+        - emoji: '#icon--mute'
+          text: 静音
+        - emoji: '#icon--sad'
+          text: 难过
+        - emoji: '#icon--scared'
+          text: 害怕
+        - emoji: '#icon--secret'
+          text: 闭嘴
+        - emoji: '#icon--sick'
+          text: 生病
+        - emoji: '#icon--smile'
+          text: 笑
+        - emoji: '#icon--sleeping'
+          text: 睡觉
+        - emoji: '#icon--smiling'
+          text: 眼红
+        - emoji: '#icon--sweat'
+          text: 流汗
+        - emoji: '#icon--surprised'
+          text: 震惊
+        - emoji: '#icon--smirking'
+          text: 奸笑
+        - emoji: '#icon--thinking'
+          text: 思考
+        - emoji: '#icon--tired'
+          text: 疲惫
+        - emoji: '#icon--tongue'
+          text: 吐舌
+        - emoji: '#icon--unamused'
+          text: 斜眼
+        - emoji: '#icon--wink'
+          text: 眨眼
+        - emoji: '#icon--vomiting'
+          text: 呕吐
+        - emoji: '#icon--zombie'
+          text: 僵尸
