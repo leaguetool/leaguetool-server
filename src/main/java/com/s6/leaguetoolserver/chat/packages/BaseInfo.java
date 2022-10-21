@@ -13,4 +13,6 @@ public class BaseInfo implements Serializable {
     //当前房间热度人员
     public List<User> hotUser;
     //其他等等...初始化的数据都可以在这里
+    //热词
+    public List<String> hotWords;
 }

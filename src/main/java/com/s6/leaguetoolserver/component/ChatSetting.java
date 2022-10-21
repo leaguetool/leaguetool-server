@@ -17,4 +17,6 @@ public class ChatSetting {
 
     private List<Emoji> emoji;
 
+    private List<String> hotWords;
+
 }
