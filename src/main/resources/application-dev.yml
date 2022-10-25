@@ -1,6 +1,12 @@
 server:
   port: 9999
 
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://49.232.68.210:3307/leaguetool?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8&autoReconnect=true&useSSL=true&allowMultiQueries=true
+    username: root
+    password: cailong520
 
 nacos:
   config:
