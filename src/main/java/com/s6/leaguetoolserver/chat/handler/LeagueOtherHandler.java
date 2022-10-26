@@ -10,6 +10,8 @@ import com.s6.leaguetoolserver.chat.packages.OtherPak;
 import com.s6.leaguetoolserver.chat.packages.Package;
 import com.s6.leaguetoolserver.chat.packages.enums.MessageType;
 import com.s6.leaguetoolserver.chat.packages.enums.OtherPakType;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.tio.core.ChannelContext;
 import org.tio.core.Tio;
 import org.tio.http.common.HttpRequest;
@@ -20,8 +22,11 @@ import org.tio.websocket.server.handler.IWsMsgHandler;
 
 import java.util.Set;
 
+@Component
 public class LeagueOtherHandler implements IWsMsgHandler {
 
+    @Autowired
+    ChatUtils chatUtils;
     @Override
     public HttpResponse handshake(HttpRequest httpRequest, HttpResponse httpResponse, ChannelContext channelContext) throws Exception {
         return null;
@@ -60,7 +65,7 @@ public class LeagueOtherHandler implements IWsMsgHandler {
                 this.send(channelContext, OtherPakType.AREA_HOT,hot);
             case BASE_DATA:
                 //发送基础信息
-                ChatUtils.initBaseInfo(channelContext);
+                chatUtils.initBaseInfo(channelContext);
         }
         return null;
     }

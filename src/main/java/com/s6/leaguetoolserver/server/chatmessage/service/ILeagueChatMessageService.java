@@ -13,4 +13,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface ILeagueChatMessageService extends IService<LeagueChatMessageEntity> {
 
+    void addMessage(LeagueChatMessageEntity messageEntity);
 }

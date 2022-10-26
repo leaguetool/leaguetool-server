@@ -1,13 +1,11 @@
 package com.s6.leaguetoolserver.server.chatmessage.entity;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.s6.leaguetoolserver.model.base.BaseEntity;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -25,7 +23,7 @@ import lombok.Setter;
 @Setter
 @TableName("league_chat_message")
 @ApiModel(value = "LeagueChatMessageEntity对象", description = "")
-public class LeagueChatMessageEntity implements Serializable {
+public class LeagueChatMessageEntity extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
 
@@ -50,8 +48,8 @@ public class LeagueChatMessageEntity implements Serializable {
     private String content;
 
     @ApiModelProperty("通道")
-    @TableField("group")
-    private Integer group;
+    @TableField("chat_group")
+    private Integer chatGroup;
 
     @ApiModelProperty("消息类型")
     @TableField("msg_type")
@@ -77,16 +75,27 @@ public class LeagueChatMessageEntity implements Serializable {
     @TableField("is_self")
     private Integer isSelf;
 
-    @ApiModelProperty("创建时间")
-    @TableField(value = "create_time", fill = FieldFill.INSERT)
-    private LocalDateTime createTime;
+    public static final String ID = "id";
 
-    @ApiModelProperty("更新时间")
-    @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
-    private LocalDateTime updateTime;
+    public static final String UID = "uid";
 
-    @ApiModelProperty("删除标志")
-    @TableField("delete")
-    @TableLogic
-    private Integer delete;
+    public static final String USER_AREA = "user_area";
+
+    public static final String USER_AREA_NAME = "user_area_name";
+
+    public static final String CONTENT = "content";
+
+    public static final String CHAT_GROUP = "chat_group";
+
+    public static final String MSG_TYPE = "msg_type";
+
+    public static final String AVATAR = "avatar";
+
+    public static final String RANK = "rank";
+
+    public static final String GENDER = "gender";
+
+    public static final String DISPLAY_NAME = "display_name";
+
+    public static final String IS_SELF = "is_self";
 }

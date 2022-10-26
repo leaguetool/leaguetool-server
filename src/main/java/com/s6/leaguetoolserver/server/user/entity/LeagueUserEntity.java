@@ -1,13 +1,10 @@
 package com.s6.leaguetoolserver.server.user.entity;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
-import java.io.Serializable;
-import java.time.LocalDateTime;
+import com.s6.leaguetoolserver.model.base.BaseEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -25,7 +22,7 @@ import lombok.Setter;
 @Setter
 @TableName("league_user")
 @ApiModel(value = "LeagueUserEntity对象", description = "")
-public class LeagueUserEntity implements Serializable {
+public class LeagueUserEntity extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
 
@@ -41,16 +38,9 @@ public class LeagueUserEntity implements Serializable {
     @TableField("status")
     private Integer status;
 
-    @ApiModelProperty("创建时间")
-    @TableField(value = "create_time", fill = FieldFill.INSERT)
-    private LocalDateTime createTime;
+    public static final String ID = "id";
 
-    @ApiModelProperty("更新时间")
-    @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
-    private LocalDateTime updateTime;
+    public static final String UID = "uid";
 
-    @ApiModelProperty("删除标志")
-    @TableField("delete")
-    @TableLogic
-    private Integer delete;
+    public static final String STATUS = "status";
 }

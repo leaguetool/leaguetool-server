@@ -4,11 +4,14 @@ import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import com.alibaba.fastjson.JSON;
+import com.s6.leaguetoolserver.chat.commen.ChatUtils;
 import com.s6.leaguetoolserver.chat.config.LeagueServerConfig;
 import com.s6.leaguetoolserver.chat.packages.ChatMessage;
 import com.s6.leaguetoolserver.chat.packages.Package;
 import com.s6.leaguetoolserver.component.ChatSetting;
 import com.s6.leaguetoolserver.component.emoji.Emoji;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.tio.core.ChannelContext;
 import org.tio.core.Tio;
 import org.tio.http.common.HttpRequest;
@@ -23,8 +26,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
+@Component
 public class LeagueChatHandler implements IWsMsgHandler {
 
+    @Autowired
+    ChatUtils chatUtils;
     @Override
     public HttpResponse handshake(HttpRequest httpRequest, HttpResponse httpResponse, ChannelContext channelContext) throws Exception {
         return null;
@@ -59,6 +65,8 @@ public class LeagueChatHandler implements IWsMsgHandler {
         WsResponse wsResponse = WsResponse.fromText(JSON.toJSONString(aPackage), LeagueServerConfig.CHARSET);
         //群发
         Tio.sendToGroup(channelContext.tioConfig, chatMessage.getRegion().getId().toString(), wsResponse);
+        //保存数据
+        chatUtils.saveMessage(chatMessage);
         return null;
     }
 

@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.generator.config.OutputFile;
 import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
 import com.baomidou.mybatisplus.generator.fill.Column;
 import com.baomidou.mybatisplus.generator.fill.Property;
+import com.s6.leaguetoolserver.model.base.BaseEntity;
 
 import java.util.Collections;
 
@@ -21,26 +22,31 @@ public class AutoGenerator {
                 })
                 .packageConfig(builder -> {
                     builder.parent("com.s6.leaguetoolserver.server") // 设置父包名
-                            .moduleName("user"); // 设置父包模块名
+                            .moduleName("userinfo"); // 设置父包模块名
 //                            .pathInfo(Collections.singletonMap(OutputFile.xml, "D:\\code\\leaguetool-server\\src\\main\\java\\com\\s6\\leaguetoolserver\\server\\mapper")); // 设置mapperXml生成路径
                 })
                 .strategyConfig(builder -> {
                     builder.entityBuilder()
                             //开启 lombok 模型
                             .enableLombok()
+                            //开启生成字段常量
+                            .enableColumnConstant()
                             //开启生成实体时生成字段注解
                             .enableTableFieldAnnotation()
                             //逻辑删除字段名(数据库)
-                            .logicDeleteColumnName("delete")
+                            .logicDeleteColumnName("enable")
                             //逻辑删除属性名(实体)
-                            .logicDeletePropertyName("delete")
+                            .logicDeletePropertyName("enable")
                             //全局主键类型
                             .idType(IdType.ASSIGN_UUID)
+                            //设置父类
+                            .superClass(BaseEntity.class)
+                            .addIgnoreColumns("create_time","update_time")
                             //添加表字段填充
-                            .addTableFills(new Column("create_time", FieldFill.INSERT))
-                            .addTableFills(new Property("updateTime", FieldFill.INSERT_UPDATE))
+//                            .addTableFills(new Column("create_time", FieldFill.INSERT))
+//                            .addTableFills(new Property("updateTime", FieldFill.INSERT_UPDATE))
                             .formatFileName("%sEntity");
-                    builder.addInclude("league_user"); // 设置需要生成的表名
+                    builder.addInclude("league_user_info"); // 设置需要生成的表名
                 })
                 .templateEngine(new FreemarkerTemplateEngine()) // 使用Freemarker引擎模板，默认的是Velocity引擎模板
 

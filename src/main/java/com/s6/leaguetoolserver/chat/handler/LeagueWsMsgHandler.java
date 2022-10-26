@@ -12,6 +12,8 @@ import com.s6.leaguetoolserver.chat.packages.enums.MessageType;
 import com.s6.leaguetoolserver.chat.packages.enums.OtherPakType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.tio.core.ChannelContext;
 import org.tio.core.Tio;
@@ -25,15 +27,29 @@ import org.tio.websocket.server.handler.IWsMsgHandler;
 import java.util.HashMap;
 import java.util.Map;
 
+@Component
 public class LeagueWsMsgHandler implements IWsMsgHandler {
-    public static Map<MessageType, IWsMsgHandler> handlerMap = new HashMap<>();
-    private static Logger log = LoggerFactory.getLogger(LeagueWsMsgHandler.class);
-    public static final LeagueWsMsgHandler me = new LeagueWsMsgHandler();
 
-    public LeagueWsMsgHandler() {
-        handlerMap.put(MessageType.PING, new LeaguePingHandler());
-        handlerMap.put(MessageType.CHAT, new LeagueChatHandler());
-        handlerMap.put(MessageType.OTHER, new LeagueOtherHandler());
+    @Autowired
+    ChatUtils chatUtils;
+
+    @Autowired
+    LeagueChatHandler leagueChatHandler;
+
+    @Autowired
+    LeagueOtherHandler leagueOtherHandler;
+
+    @Autowired
+    LeaguePingHandler leaguePingHandler;
+
+    public Map<MessageType, IWsMsgHandler> handlerMap = new HashMap<>();
+    private static Logger log = LoggerFactory.getLogger(LeagueWsMsgHandler.class);
+//    public static final LeagueWsMsgHandler me = new LeagueWsMsgHandler();
+
+    public LeagueWsMsgHandler(LeagueChatHandler leagueChatHandler, LeagueOtherHandler leagueOtherHandler,LeaguePingHandler leaguePingHandler) {
+        handlerMap.put(MessageType.PING, leaguePingHandler);
+        handlerMap.put(MessageType.CHAT, leagueChatHandler);
+        handlerMap.put(MessageType.OTHER, leagueOtherHandler);
     }
     /**
      * 握手时走这个方法，业务可以在这里获取cookie，request参数等
@@ -85,7 +101,7 @@ public class LeagueWsMsgHandler implements IWsMsgHandler {
         leagueOtherHandler.send(channelContext, OtherPakType.AREA_HOT,hot);
 
         //发送基础信息
-        ChatUtils.initBaseInfo(channelContext);
+        chatUtils.initBaseInfo(channelContext);
     }
     /**
      * 字节消息（binaryType = arraybuffer）过来后会走这个方法

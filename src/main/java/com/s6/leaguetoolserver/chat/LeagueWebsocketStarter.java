@@ -1,16 +1,27 @@
 package com.s6.leaguetoolserver.chat;
 
-import com.s6.leaguetoolserver.LeaguetoolServerApplication;
 import com.s6.leaguetoolserver.chat.config.LeagueServerConfig;
 import com.s6.leaguetoolserver.chat.handler.LeagueWsMsgHandler;
 import com.s6.leaguetoolserver.chat.listener.LeagueIpStatListener;
 import com.s6.leaguetoolserver.chat.listener.LeagueServerAioListener;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
+import org.springframework.stereotype.Component;
 import org.tio.server.ServerTioConfig;
 import org.tio.websocket.server.WsServerStarter;
 
-public class LeagueWebsocketStarter {
+@Component
+public class LeagueWebsocketStarter implements ApplicationRunner {
+
+    @Autowired
+    LeagueWsMsgHandler leagueWsMsgHandler;
+
     private WsServerStarter wsServerStarter;
     private ServerTioConfig serverTioConfig;
+    public LeagueWebsocketStarter(){
+
+    }
     /**
      *
      * @author tanyaowu
@@ -40,8 +51,8 @@ public class LeagueWebsocketStarter {
     /**
      * @author tanyaowu
      */
-    public static void start() throws Exception {
-        LeagueWebsocketStarter appStarter = new LeagueWebsocketStarter(LeagueServerConfig.SERVER_PORT, LeagueWsMsgHandler.me);
+    public void start() throws Exception {
+        LeagueWebsocketStarter appStarter = new LeagueWebsocketStarter(LeagueServerConfig.SERVER_PORT, this.leagueWsMsgHandler);
         appStarter.wsServerStarter.start();
     }
     /**
@@ -53,7 +64,17 @@ public class LeagueWebsocketStarter {
     public WsServerStarter getWsServerStarter() {
         return wsServerStarter;
     }
-    public static void main(String[] args)  {
+//    public static void main(String[] args)  {
+//        try {
+//            //启动websocket server
+//            start();
+//        } catch (Exception e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
+
+    @Override
+    public void run(ApplicationArguments args) throws Exception {
         try {
             //启动websocket server
             start();
