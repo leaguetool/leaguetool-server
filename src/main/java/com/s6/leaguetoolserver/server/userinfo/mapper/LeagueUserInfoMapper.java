@@ -1,6 +1,6 @@
 package com.s6.leaguetoolserver.server.userinfo.mapper;
 
-import com.s6.leaguetoolserver.server.userinfo.entity.LeagueUserInfo;
+import com.s6.leaguetoolserver.server.userinfo.entity.LeagueUserInfoEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
@@ -11,6 +11,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * @author cailong
  * @since 2022-10-26
  */
-public interface LeagueUserInfoMapper extends BaseMapper<LeagueUserInfo> {
+public interface LeagueUserInfoMapper extends BaseMapper<LeagueUserInfoEntity> {
 
 }

@@ -1,4 +1,4 @@
-package com.s6.leaguetoolserver.server.userinfo.controller;
+package com.s6.leaguetoolserver.server.user.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.stereotype.Controller;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Controller;
  * @since 2022-10-26
  */
 @Controller
-@RequestMapping("/userinfo/leagueUserInfoEntity")
-public class LeagueUserInfoController {
+@RequestMapping("/user/leagueUserEntity")
+public class LeagueUserController {
 
 }

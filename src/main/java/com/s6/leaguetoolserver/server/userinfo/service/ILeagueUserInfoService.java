@@ -1,6 +1,6 @@
 package com.s6.leaguetoolserver.server.userinfo.service;
 
-import com.s6.leaguetoolserver.server.userinfo.entity.LeagueUserInfo;
+import com.s6.leaguetoolserver.server.userinfo.entity.LeagueUserInfoEntity;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
@@ -11,6 +11,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @author cailong
  * @since 2022-10-26
  */
-public interface ILeagueUserInfoService extends IService<LeagueUserInfo> {
+public interface ILeagueUserInfoService extends IService<LeagueUserInfoEntity> {
 
 }
