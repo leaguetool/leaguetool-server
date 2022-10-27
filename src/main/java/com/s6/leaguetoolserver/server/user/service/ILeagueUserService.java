@@ -13,4 +13,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface ILeagueUserService extends IService<LeagueUserEntity> {
 
+    LeagueUserEntity getUserByUid(String uid);
 }
