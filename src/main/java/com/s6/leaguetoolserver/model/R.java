@@ -30,4 +30,8 @@ public class R<T> implements Serializable {
     public static R err(String data){
         return new R(data,1);
     }
+
+    public static <T extends Throwable> R fail(Integer code, String msg, T ex) {
+        return new R(msg,code,ex);
+    }
 }

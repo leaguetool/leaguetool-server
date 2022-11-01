@@ -1,16 +1,15 @@
 package com.s6.leaguetoolserver.server.userinfo.controller;
 
 import cn.hutool.system.UserInfo;
+import com.s6.leaguetoolserver.config.exception.GlobalException;
 import com.s6.leaguetoolserver.model.R;
 import com.s6.leaguetoolserver.server.userinfo.dto.LoginDTO;
 import com.s6.leaguetoolserver.server.userinfo.entity.LeagueUserInfoEntity;
 import com.s6.leaguetoolserver.server.userinfo.service.ILeagueUserInfoService;
+import jdk.nashorn.internal.objects.Global;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  * <p>
@@ -20,7 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * @author cailong
  * @since 2022-10-26
  */
-@Controller
+@RestController
 @RequestMapping("/userinfo/leagueUserInfoEntity")
 public class LeagueUserInfoController {
 
@@ -29,7 +28,11 @@ public class LeagueUserInfoController {
 
 
     @PostMapping("/login")
-    public R<LeagueUserInfoEntity> login(@RequestBody LoginDTO userinfo){
-        return R.success(leagueUserInfoService.login(userinfo));
+    public R<?> login(@RequestBody LoginDTO userinfo){
+        try {
+            return R.success(leagueUserInfoService.login(userinfo));
+        } catch (GlobalException e) {
+            return R.fail(e.getCode(),e.getMsg(), e.getCause());
+        }
     }
 }

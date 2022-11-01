@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.s6.leaguetoolserver.enums.UserStatusEnum;
 import com.s6.leaguetoolserver.model.base.BaseEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -24,8 +25,7 @@ import lombok.Setter;
 @ApiModel(value = "LeagueUserEntity对象", description = "")
 public class LeagueUserEntity extends BaseEntity {
 
-    private static final long serialVersionUID = 1L;
-
+    private static final long serialVersionUID = -2670077254233450270L;
     @ApiModelProperty("id")
     @TableId(value = "id", type = IdType.ASSIGN_UUID)
     private String id;
@@ -36,7 +36,7 @@ public class LeagueUserEntity extends BaseEntity {
 
     @ApiModelProperty("用户状态 0正常 -1冻结")
     @TableField("status")
-    private Integer status;
+    private UserStatusEnum status;
 
     public static final String ID = "id";
 

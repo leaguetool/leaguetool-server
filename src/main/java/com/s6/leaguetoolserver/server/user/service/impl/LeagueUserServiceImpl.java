@@ -1,5 +1,6 @@
 package com.s6.leaguetoolserver.server.user.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.s6.leaguetoolserver.server.user.entity.LeagueUserEntity;
 import com.s6.leaguetoolserver.server.user.mapper.LeagueUserMapper;
 import com.s6.leaguetoolserver.server.user.service.ILeagueUserService;
@@ -22,7 +23,6 @@ public class LeagueUserServiceImpl extends ServiceImpl<LeagueUserMapper, LeagueU
 
     @Override
     public LeagueUserEntity getUserByUid(String uid) {
-
-        return null;
+        return this.baseMapper.selectOne(new QueryWrapper<LeagueUserEntity>().eq(LeagueUserEntity.UID, uid));
     }
 }

@@ -66,6 +66,31 @@ public class LeagueUserInfoEntity extends BaseEntity {
     @TableField("win_rate")
     private String winRate;
 
+    //掌上
+    @ApiModelProperty("掌上")
+    @TableField("mobile_player_info")
+    private String mobilePlayerInfo;
+    //战斗信息
+    @ApiModelProperty("战斗信息")
+    @TableField("player_battle_summary")
+    private String playerBattleSummary;
+    //荣誉信息
+    @ApiModelProperty("荣誉信息")
+    @TableField("player_honor")
+    private String playerHonor;
+    //基本信息
+    @ApiModelProperty("基本信息")
+    @TableField("player_info")
+    private String playerInfo;
+    //排位信息
+    @ApiModelProperty("排位信息")
+    @TableField("player_rank_info")
+    private String playerRankInfo;
+    //基础信息
+    @ApiModelProperty("基础信息")
+    @TableField("info_data")
+    private String infoData;
+
     public static final String ID = "id";
 
     public static final String UID = "uid";
@@ -73,6 +98,8 @@ public class LeagueUserInfoEntity extends BaseEntity {
     public static final String AREA = "area";
 
     public static final String AREA_NAME = "area_name";
+    //驼峰
+    public static final String AREANAME = "areaName";
 
     public static final String DISPLAY_NAME = "display_name";
 

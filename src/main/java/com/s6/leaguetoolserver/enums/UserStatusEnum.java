@@ -1,4 +1,4 @@
-package com.s6.leaguetoolserver.model.enums;
+package com.s6.leaguetoolserver.enums;
 
 import com.baomidou.mybatisplus.annotation.IEnum;
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -11,21 +11,21 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * enum;[DEFAULT,0,默认存在]--[DELETE,1,删除];逻辑删除
+ * 用户状态
  */
 @Getter
 @AllArgsConstructor
-public enum LogicDeleteEnum implements Serializable , IEnum<Integer> {
+public enum UserStatusEnum implements Serializable, IEnum<Integer> {
 
-    DEFAULT(0,"默认存在"),
-    DELETE(1,"逻辑删除");
+    DEFAULT(0,"正常"),
+    ABNORMAL(-1,"冻结");
 
     private final int code;
     private final String desc;
 
     @JsonCreator
-    public static LogicDeleteEnum jsonCreator(String name){
-        for (LogicDeleteEnum value : LogicDeleteEnum.values()) {
+    public static UserStatusEnum jsonCreator(String name){
+        for (UserStatusEnum value : UserStatusEnum.values()) {
             if (value.name().equals(name)) {
                 return value;
             }
@@ -41,8 +41,8 @@ public enum LogicDeleteEnum implements Serializable , IEnum<Integer> {
         return map;
     }
 
-    public static LogicDeleteEnum find(String desc ) throws IllegalArgumentException{
-        for (LogicDeleteEnum model : LogicDeleteEnum.values()) {
+    public static UserStatusEnum find(String desc ) throws IllegalArgumentException{
+        for (UserStatusEnum model : UserStatusEnum.values()) {
             if (model.getDesc().equals(desc)) {
                 return model;
             }
@@ -50,8 +50,8 @@ public enum LogicDeleteEnum implements Serializable , IEnum<Integer> {
         return null;
     }
 
-    public static LogicDeleteEnum find(int code ) throws IllegalArgumentException{
-        for (LogicDeleteEnum model : LogicDeleteEnum.values()) {
+    public static UserStatusEnum find(int code ) throws IllegalArgumentException{
+        for (UserStatusEnum model : UserStatusEnum.values()) {
             if (model.getCode() == code) {
                 return model;
             }
