@@ -1,5 +1,6 @@
 package com.s6.leaguetoolserver.server.userinfo.service;
 
+import com.s6.leaguetoolserver.server.userinfo.dto.LoginDTO;
 import com.s6.leaguetoolserver.server.userinfo.dto.LoginResult;
 import com.s6.leaguetoolserver.server.userinfo.entity.LeagueUserInfoEntity;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -14,5 +15,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface ILeagueUserInfoService extends IService<LeagueUserInfoEntity> {
 
-    LoginResult login(LeagueUserInfoEntity userinfo);
+    LoginResult login(LoginDTO userinfo);
 }

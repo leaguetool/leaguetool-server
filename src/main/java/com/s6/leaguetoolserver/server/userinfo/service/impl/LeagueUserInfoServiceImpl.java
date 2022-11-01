@@ -1,6 +1,8 @@
 package com.s6.leaguetoolserver.server.userinfo.service.impl;
 
+import com.s6.leaguetoolserver.server.user.entity.LeagueUserEntity;
 import com.s6.leaguetoolserver.server.user.service.ILeagueUserService;
+import com.s6.leaguetoolserver.server.userinfo.dto.LoginDTO;
 import com.s6.leaguetoolserver.server.userinfo.dto.LoginResult;
 import com.s6.leaguetoolserver.server.userinfo.entity.LeagueUserInfoEntity;
 import com.s6.leaguetoolserver.server.userinfo.mapper.LeagueUserInfoMapper;
@@ -27,9 +29,9 @@ public class LeagueUserInfoServiceImpl extends ServiceImpl<LeagueUserInfoMapper,
 
 
     @Override
-    public LoginResult login(LeagueUserInfoEntity userinfo) {
-
-
+    public LoginResult login(LoginDTO userinfo) {
+//        LeagueUserEntity leagueUserEntity = new LeagueUserEntity();
+//        userService.save(leagueUserEntity);
 
         return null;
     }
