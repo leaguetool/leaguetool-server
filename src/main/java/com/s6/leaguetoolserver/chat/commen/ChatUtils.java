@@ -1,11 +1,12 @@
 package com.s6.leaguetoolserver.chat.commen;
 
 import cn.hutool.extra.spring.SpringUtil;
+import com.alibaba.fastjson.JSON;
+import com.s6.leaguetoolserver.chat.config.LeagueServerConfig;
 import com.s6.leaguetoolserver.chat.handler.LeagueOtherHandler;
 import com.s6.leaguetoolserver.chat.handler.LeagueWsMsgHandler;
-import com.s6.leaguetoolserver.chat.packages.BaseInfo;
-import com.s6.leaguetoolserver.chat.packages.ChatMessage;
-import com.s6.leaguetoolserver.chat.packages.Region;
+import com.s6.leaguetoolserver.chat.packages.*;
+import com.s6.leaguetoolserver.chat.packages.Package;
 import com.s6.leaguetoolserver.chat.packages.enums.MessageType;
 import com.s6.leaguetoolserver.chat.packages.enums.OtherPakType;
 import com.s6.leaguetoolserver.component.AdminUsers;
@@ -20,7 +21,9 @@ import org.springframework.stereotype.Component;
 import org.tio.core.ChannelContext;
 import org.tio.core.Tio;
 import org.tio.utils.lock.SetWithLock;
+import org.tio.websocket.common.WsResponse;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,6 +38,7 @@ public class ChatUtils {
     LeagueOtherHandler leagueOtherHandler;
     @Autowired
     ILeagueChatMessageService chatMessageService;
+
 
     /**
      * 构建基础信息发送
@@ -55,6 +59,48 @@ public class ChatUtils {
         leagueOtherHandler.send(channelContext, OtherPakType.BASE_DATA,baseInfo);
     }
 
+    /**
+     * 发送token
+     * @param channelContext
+     */
+    public void sendToken(ChannelContext channelContext){
+        String token = channelContext.getToken();
+        Package pack = new Package();
+        pack.setType(MessageType.OTHER);
+        //构建一个发送other的token包
+        pack.setData(JSON.toJSONString(OtherPak.builder().otherPakType(OtherPakType.SEND_TOKEN).data(token).build()));
+        WsResponse wsResponse = WsResponse.fromText(JSON.toJSONString(pack), LeagueServerConfig.CHARSET);
+        //发送给用户的id
+        Tio.sendToToken(channelContext.tioConfig,token,wsResponse);
+    }
+
+    /**
+     * 发送当前大区热度
+     * @param channelContext
+     */
+    public void sendInitHot(ChannelContext channelContext,String region){
+        int i = Tio.groupCount(channelContext.tioConfig, region);
+        int hot = HotUtils.getHot(i);
+        //发送给大区的人
+        leagueOtherHandler.send(channelContext, OtherPakType.AREA_HOT,hot);
+    }
+
+    /**
+     * 发送历史记录
+     * @param channelContext 上下文
+     * @param region 大区id
+     */
+    public void sendChatHistory(ChannelContext channelContext, String region){
+        List<ChatMessage> chatHistory = chatMessageService.getChatHistory(region, chatSetting.getHistoryCount()).stream().map(ChatMessage::new).collect(Collectors.toList());
+        //因为查询时用的时间倒叙，这里需要把数据反转才是正常的聊天记录
+        Collections.reverse(chatHistory);
+        leagueOtherHandler.send(channelContext,OtherPakType.CHAT_HISTORY, chatHistory);
+    }
+
+    /**
+     * 持久化聊天
+     * @param chatMessage
+     */
     public void saveMessage(ChatMessage chatMessage){
 
         LeagueChatMessageEntity messageEntity = new LeagueChatMessageEntity();

@@ -7,8 +7,11 @@ public enum OtherPakType {
     //大区热度通知
     AREA_HOT,
     //基础信息
-    BASE_DATA
-    ;
+    BASE_DATA,
+
+    ACCOUNT_ERROR,
+    //历史记录
+    CHAT_HISTORY;
 
     OtherPakType OtherPakType(String type){
         for (OtherPakType value : values()) {

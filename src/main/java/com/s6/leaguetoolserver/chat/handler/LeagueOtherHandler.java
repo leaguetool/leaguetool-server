@@ -63,6 +63,8 @@ public class LeagueOtherHandler implements IWsMsgHandler {
                 int hot = HotUtils.getHot(i);
                 //发送给大区的人
                 this.send(channelContext, OtherPakType.AREA_HOT,hot);
+                //同步聊天记录
+                chatUtils.sendChatHistory(channelContext, otherPak.getData());
             case BASE_DATA:
                 //发送基础信息
                 chatUtils.initBaseInfo(channelContext);

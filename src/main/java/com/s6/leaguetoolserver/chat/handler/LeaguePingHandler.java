@@ -42,7 +42,12 @@ public class LeaguePingHandler implements IWsMsgHandler {
 
     @Override
     public Object onText(WsRequest wsRequest, String text, ChannelContext channelContext) throws Exception {
-
+        Package pack = new Package();
+        pack.setType(MessageType.PONG);
+        pack.setData(null);
+        WsResponse wsResponse = WsResponse.fromText(JSON.toJSONString(pack), LeagueServerConfig.CHARSET);
+        //发送给用户的id
+        Tio.sendToToken(channelContext.tioConfig,channelContext.getToken(),wsResponse);
         return null;
     }
 }

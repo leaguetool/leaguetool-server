@@ -12,6 +12,8 @@ import org.tio.websocket.common.WsResponse;
 import org.tio.websocket.common.WsSessionContext;
 import org.tio.websocket.server.WsServerAioListener;
 
+import java.util.Set;
+
 public class LeagueServerAioListener extends WsServerAioListener {
     private static Logger log = LoggerFactory.getLogger(LeagueServerAioListener.class);
     public static final LeagueServerAioListener me = new LeagueServerAioListener();
@@ -39,7 +41,11 @@ public class LeagueServerAioListener extends WsServerAioListener {
         }
         WsSessionContext wsSessionContext = (WsSessionContext) channelContext.getAttribute();
         if (wsSessionContext != null && wsSessionContext.isHandshaked()) {
-            String area = channelContext.getGroups().getObj().stream().findFirst().get();
+            Set<String> obj = channelContext.getGroups().getObj();
+            if(!obj.stream().findFirst().isPresent()){
+                return;
+            }
+            String area = obj.stream().findFirst().get();
             //获取加入的群有还有多少个人
             int i = Tio.groupCount(channelContext.tioConfig, area);
             //服务器总共还有多少人

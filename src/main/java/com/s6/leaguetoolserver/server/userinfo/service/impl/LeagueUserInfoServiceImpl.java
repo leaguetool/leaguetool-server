@@ -57,15 +57,19 @@ public class LeagueUserInfoServiceImpl extends ServiceImpl<LeagueUserInfoMapper,
         String area = jsonObject.getString(LeagueUserInfoEntity.AREA);
         //查看个人资料是否有该大区的信息
         LeagueUserInfoEntity leagueUserInfo = this.baseMapper.selectOne(new QueryWrapper<LeagueUserInfoEntity>().eq(LeagueUserInfoEntity.UID, uid).eq(LeagueUserInfoEntity.AREA, area));
-        if (null == leagueUserInfo){
-//            LeagueUserInfoEntity leagueUserInfoEntity = new LeagueUserInfoEntity();
-            LeagueUserInfoEntity leagueUserInfoEntity = jsonObject.toJavaObject(LeagueUserInfoEntity.class);
-            LeaguePlayerInfo leaguePlayerInfo = JSON.parseObject(userinfo.getPlayerInfo()).toJavaObject(LeaguePlayerInfo.class);
-            leagueUserInfoEntity.setSummonerLevel(String.valueOf(leaguePlayerInfo.getLevel()));
-            leagueUserInfoEntity.setSummonerAvatar(String.valueOf(leaguePlayerInfo.getIconId()));
+        LeagueUserInfoEntity leagueUserInfoEntity = jsonObject.toJavaObject(LeagueUserInfoEntity.class);
+        LeaguePlayerInfo leaguePlayerInfo = JSON.parseObject(userinfo.getPlayerInfo()).toJavaObject(LeaguePlayerInfo.class);
+        leagueUserInfoEntity.setSummonerLevel(String.valueOf(leaguePlayerInfo.getLevel()));
+        leagueUserInfoEntity.setSummonerAvatar(String.valueOf(leaguePlayerInfo.getIconId()));
 
-            BeanUtils.copyProperties(userinfo, leagueUserInfoEntity);
+        BeanUtils.copyProperties(userinfo, leagueUserInfoEntity);
+        if (null == leagueUserInfo){
             this.save(leagueUserInfoEntity);
+        }else{
+            String id = leagueUserInfo.getId();
+            BeanUtils.copyProperties(leagueUserInfoEntity, leagueUserInfo);
+            leagueUserInfo.setId(id);
+            this.updateById(leagueUserInfo);
         }
 
         return null;

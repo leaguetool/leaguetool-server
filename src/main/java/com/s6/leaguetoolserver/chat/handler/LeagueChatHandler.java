@@ -10,6 +10,9 @@ import com.s6.leaguetoolserver.chat.packages.ChatMessage;
 import com.s6.leaguetoolserver.chat.packages.Package;
 import com.s6.leaguetoolserver.component.ChatSetting;
 import com.s6.leaguetoolserver.component.emoji.Emoji;
+import com.s6.leaguetoolserver.enums.UserStatusEnum;
+import com.s6.leaguetoolserver.server.user.entity.LeagueUserEntity;
+import com.s6.leaguetoolserver.server.user.service.ILeagueUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.tio.core.ChannelContext;
@@ -31,6 +34,10 @@ public class LeagueChatHandler implements IWsMsgHandler {
 
     @Autowired
     ChatUtils chatUtils;
+
+    @Autowired
+    ILeagueUserService leagueUserService;
+
     @Override
     public HttpResponse handshake(HttpRequest httpRequest, HttpResponse httpResponse, ChannelContext channelContext) throws Exception {
         return null;
@@ -56,6 +63,12 @@ public class LeagueChatHandler implements IWsMsgHandler {
         //聊天
         Package aPackage = JSON.parseObject(text, Package.class);
         ChatMessage chatMessage = JSON.parseObject(aPackage.getData(), ChatMessage.class);
+
+        //如果检测账号异常，那么就不继续往下处理
+        boolean checkUserStatus = checkUserStatus(chatMessage.getUid());
+        if(checkUserStatus) {
+            return null;
+        }
 //        content.replaceAll("\\[害怕\\]", "<emoji>#icon--scared</emoji>"
         //处理表情包
         emojiParse(chatMessage);
@@ -70,6 +83,24 @@ public class LeagueChatHandler implements IWsMsgHandler {
         return null;
     }
 
+    /**
+     * 检测用户状态
+     * @return
+     */
+    public boolean checkUserStatus(String uid){
+        LeagueUserEntity user = leagueUserService.getUserByUid(uid);
+        if(null == user){
+            return true;
+        }
+        return UserStatusEnum.ABNORMAL.getCode() == user.getStatus().getCode();
+    }
+
+
+
+    /**
+     * 解析表情
+     * @param chatMessage chat实体
+     */
     private void emojiParse(ChatMessage chatMessage){
         AtomicReference<String> content = new AtomicReference<>(chatMessage.getContent());
         //找出用了哪些表情包

@@ -10,6 +10,9 @@ import com.s6.leaguetoolserver.chat.packages.OtherPak;
 import com.s6.leaguetoolserver.chat.packages.Package;
 import com.s6.leaguetoolserver.chat.packages.enums.MessageType;
 import com.s6.leaguetoolserver.chat.packages.enums.OtherPakType;
+import com.s6.leaguetoolserver.enums.UserStatusEnum;
+import com.s6.leaguetoolserver.server.user.entity.LeagueUserEntity;
+import com.s6.leaguetoolserver.server.user.service.ILeagueUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +45,9 @@ public class LeagueWsMsgHandler implements IWsMsgHandler {
     @Autowired
     LeaguePingHandler leaguePingHandler;
 
+    @Autowired
+    ILeagueUserService leagueUserService;
+
     public Map<MessageType, IWsMsgHandler> handlerMap = new HashMap<>();
     private static Logger log = LoggerFactory.getLogger(LeagueWsMsgHandler.class);
 //    public static final LeagueWsMsgHandler me = new LeagueWsMsgHandler();
@@ -57,14 +63,21 @@ public class LeagueWsMsgHandler implements IWsMsgHandler {
     @Override
     public HttpResponse handshake(HttpRequest request, HttpResponse httpResponse, ChannelContext channelContext) throws Exception {
         String clientip = request.getClientIp();
+        String region = request.getParam("region");
         String uuid = IdUtil.objectId();
         String uid = request.getParam("uid");
+        if(!StringUtils.hasText(uid) || !StringUtils.hasText(region)){
+            return httpResponse;
+        }
         //如果是游客就使用生成的uuid
         if("tourist".equals(uid)){
             uid = uuid;
         }
+
         Tio.bindUser(channelContext, uid);
         Tio.bindToken(channelContext, uuid);
+        //绑定到群组，后面会有群发
+        Tio.bindGroup(channelContext, region);
         log.info("收到来自{}的ws握手包\r\n{}", clientip, request.toString());
         return httpResponse;
     }
@@ -76,32 +89,18 @@ public class LeagueWsMsgHandler implements IWsMsgHandler {
      */
     @Override
     public void onAfterHandshaked(HttpRequest httpRequest, HttpResponse httpResponse, ChannelContext channelContext) throws Exception {
-        String region = httpRequest.getParam("region");
-        if(StringUtils.isEmpty(region)){
-            return;
-        }
-        //绑定到群组，后面会有群发
-        Tio.bindGroup(channelContext, region);
 
-        String token = channelContext.getToken();
-        Package pack = new Package();
-        pack.setType(MessageType.OTHER);
-        //构建一个发送other的token包
-        pack.setData(JSON.toJSONString(OtherPak.builder().otherPakType(OtherPakType.SEND_TOKEN).data(token).build()));
-        WsResponse wsResponse = WsResponse.fromText(JSON.toJSONString(pack), LeagueServerConfig.CHARSET);
-        //发送给用户的id
-        Tio.sendToToken(channelContext.tioConfig,token,wsResponse);
+        String region = httpRequest.getParam("region");
+        //发送token
+        chatUtils.sendToken(channelContext);
         //服务器的总连接的用户
 //      int count = Tio.getAllChannelContexts(channelContext.tioConfig).getObj().size();
         //获取当前大区有多少人在开黑大厅
-        int i = Tio.groupCount(channelContext.tioConfig, region);
-        int hot = HotUtils.getHot(i);
-        LeagueOtherHandler leagueOtherHandler = (LeagueOtherHandler) handlerMap.get(MessageType.OTHER);
-        //发送给大区的人
-        leagueOtherHandler.send(channelContext, OtherPakType.AREA_HOT,hot);
-
+        chatUtils.sendInitHot(channelContext, region);
         //发送基础信息
         chatUtils.initBaseInfo(channelContext);
+        //发送聊天记录
+        chatUtils.sendChatHistory(channelContext, region);
     }
     /**
      * 字节消息（binaryType = arraybuffer）过来后会走这个方法
@@ -144,5 +143,14 @@ public class LeagueWsMsgHandler implements IWsMsgHandler {
 
 
         //返回值是要发送给客户端的内容，一般都是返回null
+    }
+
+
+    private void sendAccountError(ChannelContext channelContext){
+        Package pack = new Package();
+        pack.setType(MessageType.OTHER);
+        pack.setData(JSON.toJSONString(OtherPak.builder().otherPakType(OtherPakType.ACCOUNT_ERROR).data("账号被冻结无法使用").build()));
+        WsResponse wsResponse = WsResponse.fromText(JSON.toJSONString(pack), LeagueServerConfig.CHARSET);
+        Tio.sendToId(channelContext.tioConfig,channelContext.getId(), wsResponse);
     }
 }

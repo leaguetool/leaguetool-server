@@ -7,6 +7,8 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * <p>
  *  服务实现类
@@ -22,5 +24,10 @@ public class LeagueChatMessageServiceImpl extends ServiceImpl<LeagueChatMessageM
     @Override
     public void addMessage(LeagueChatMessageEntity messageEntity) {
         this.save(messageEntity);
+    }
+
+    @Override
+    public List<LeagueChatMessageEntity> getChatHistory(String region, Integer count) {
+        return this.baseMapper.queryChatHistory(region, count);
     }
 }

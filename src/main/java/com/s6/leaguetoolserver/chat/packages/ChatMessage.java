@@ -1,11 +1,18 @@
 package com.s6.leaguetoolserver.chat.packages;
 
+import com.s6.leaguetoolserver.server.chatmessage.entity.LeagueChatMessageEntity;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.tio.core.Tio;
 
 import java.io.Serializable;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class ChatMessage implements Serializable {
+    private static final long serialVersionUID = -7818101703296297804L;
     //消息id
     private String id;
     //uid
@@ -26,5 +33,17 @@ public class ChatMessage implements Serializable {
     private String rank;
     //是否是自己
     private boolean isSelf;
+
+    public ChatMessage(LeagueChatMessageEntity leagueChatMessageEntity){
+        this.id = leagueChatMessageEntity.getId();
+        this.uid = leagueChatMessageEntity.getUid();
+        this.name = leagueChatMessageEntity.getDisplayName();
+        this.avatar = leagueChatMessageEntity.getAvatar();
+        this.content = leagueChatMessageEntity.getContent();
+        this.time = Long.toString(leagueChatMessageEntity.getCreateTime().getTime());
+        this.type = leagueChatMessageEntity.getMsgType();
+        this.rank = leagueChatMessageEntity.getRank();
+        this.region = new Region(leagueChatMessageEntity.getUserAreaName(), leagueChatMessageEntity.getUserArea());
+    }
 
 }

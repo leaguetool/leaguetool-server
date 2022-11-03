@@ -19,4 +19,6 @@ public class ChatSetting {
 
     private List<String> hotWords;
 
+    private Integer historyCount;
+
 }
