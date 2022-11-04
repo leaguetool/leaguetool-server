@@ -3,6 +3,8 @@ server:
 spring:
   profiles:
     active: dev
+  banner:
+    location: classpath:/banner/banner.txt
   # 连接池配置
   datasource:
     druid:
