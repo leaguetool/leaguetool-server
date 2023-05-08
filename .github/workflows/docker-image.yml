@@ -55,9 +55,10 @@ jobs:
   linux_arm64:
     # 在ubuntu-latest上运行
     runs-on: ubuntu-latest
-    env:
-      BUILD_TARGET: linux
-      BUILD_ARCH: arm64
+    strategy:
+      matrix:
+        os: [ubuntu-20.04]
+        arch: [arm64]
     # 运行的步骤
     steps:
     # 拉取代码
