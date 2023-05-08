@@ -79,6 +79,7 @@ jobs:
       uses: ilteoood/docker_buildx@master
       with:
         publish: true
+        imageName: ${{ secrets.DOCKER_REGISTER }}/leaguetool-server
         platform: linux/amd64,linux/arm64 # 你准备构建的镜像平台
         tag: ${{ secrets.DOCKER_REGISTER }}/leaguetool-server:linux_arm64 # 默认latest，可以针对平台，修改tag
 
