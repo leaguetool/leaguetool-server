@@ -5,12 +5,14 @@ on:
     branches: [ "master" ]
     
 jobs:
+  # build 任务的名称 可以叫build2  test3
   build:
-    name: Build for Linux ARM64
+    # 在ubuntu-latest上运行
     runs-on: ubuntu-latest
+    # 运行的步骤
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+    # 拉取代码
+    - uses: actions/checkout@v3
     # 步骤名称
     - name: Set up JDK 8
       # 设置maven Java
@@ -23,15 +25,17 @@ jobs:
     - name: Build with Maven
       # 打包  这些步骤都是在工作目录下进行的 生成的jar文件在target下
       run: mvn -B package --file pom.xml
-#     - name: Set up QEMU
-#       uses: docker/setup-qemu-action@v1
     - name: Set up Docker Buildx
+      # 初始化构建环境
       uses: docker/setup-buildx-action@v2
-    - name: Build and Push Docker Image
-      uses: docker/build-push-action@v2
+    - name: Build and push latest
+      # 开始构建 在当前目录下找Dockerfile,也可以指定Dockerfile位置
+      uses: docker/build-push-action@v3
       with:
+        # 当前工作目录
         context: .
-        platforms: linux/arm64
+        # 构建完成后 push
         push: true
-        tags: ${{ secrets.DOCKER_REGISTER }}/leaguetool-server:linux_arm64
-        
+        platforms: linux/arm64,linux/amd64
+        # tag
+        tags: ${{ secrets.DOCKER_REGISTER }}/leaguetool-server:latest
