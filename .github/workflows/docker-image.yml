@@ -39,3 +39,16 @@ jobs:
         platforms: linux/arm64,linux/amd64
         # tag
         tags: ${{ secrets.DOCKER_REGISTER }}/leaguetool-server:latest
+      # ssh远程连接服务器
+    - name: SSH REMOTE
+      uses: appleboy/ssh-action@master
+      with:
+       host: ${{ secrets.SSH_HOST}}
+       username: ${{ secrets.SSH_USERNAME }}
+       password: ${{ secrets.SSH_PASSWORD }}
+       port: ${{ secrets.SSH_PORT }}
+        #| 执行多行脚本命令。 拉取 停止运行中的 运行新镜像...
+       script: |
+         docker pull ${{ secrets.DOCKER_REGISTER }}/leaguetool-server:latest
+         docker stop leaguetool-server && docker rm leaguetool-server
+         docker run -d --network=host --restart=always --name=leaguetool-server ${{ secrets.DOCKER_REGISTER }}/leaguetool-server:latest
