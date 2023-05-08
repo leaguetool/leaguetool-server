@@ -54,7 +54,7 @@ jobs:
   # build 任务的名称 可以叫build2  test3
   linux_arm64:
     # 在ubuntu-latest上运行
-    runs-on: ubuntu-latest
+    runs-on: ARM64
     strategy:
       matrix:
         os: [ubuntu-20.04]
@@ -75,12 +75,19 @@ jobs:
     - name: Build with Maven
       # 打包  这些步骤都是在工作目录下进行的 生成的jar文件在target下
       run: mvn -B package --file pom.xml
-    - name: Build and publish image
-      uses: ilteoood/docker_buildx@master
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v1
+    - name: Set up Docker Buildx
+      # 初始化构建环境
+      uses: docker/setup-buildx-action@v2
+    - name: Build and push latest
+      # 开始构建 在当前目录下找Dockerfile,也可以指定Dockerfile位置
+      uses: docker/build-push-action@v3
       with:
-        publish: true
-        imageName: ${{ secrets.DOCKER_REGISTER }}/leaguetool-server
-        platform: linux/amd64,linux/arm64 # 你准备构建的镜像平台
+        # 当前工作目录
+        context: .
+        # 构建完成后 push
+        push: true
+        # tag
         tag: ${{ secrets.DOCKER_REGISTER }}/leaguetool-server:linux_arm64 # 默认latest，可以针对平台，修改tag
-
-  
+        platform: linux/arm64/v8
