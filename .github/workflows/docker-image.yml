@@ -36,7 +36,8 @@ jobs:
         context: .
         # 构建完成后 push
         push: true
-        platforms: linux/arm64,linux/amd64
+        # 构建的镜像支持的系统架构 linux/arm64,linux/amd64  可以指定多个
+        platforms: linux/amd64
         # tag
         tags: ${{ secrets.DOCKER_REGISTER }}/leaguetool-server:latest
       # ssh远程连接服务器
