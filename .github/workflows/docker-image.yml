@@ -9,11 +9,6 @@ jobs:
   build:
     # 在ubuntu-latest上运行
     runs-on: ubuntu-latest
-    services:
-      registry:
-        image: registry
-        ports:
-          - 5000:5000
     # 运行的步骤
     steps:
       # 拉取代码
