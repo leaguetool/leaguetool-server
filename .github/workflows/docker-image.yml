@@ -28,8 +28,6 @@ jobs:
       - name: Set up Docker Buildx
         # 初始化构建环境
         uses: docker/setup-buildx-action@v2
-        with:
-          driver-opts: network=host
       - name: Build and push to local registry
         # 开始构建 在当前目录下找Dockerfile,也可以指定Dockerfile位置
         uses: docker/build-push-action@v4
