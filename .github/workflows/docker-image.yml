@@ -44,7 +44,7 @@ jobs:
           # 构建完成后 push
           push: true
           # tag
-          tags: ${{ secrets.DOCKER_REGISTER }}/leaguetool-server:latest
+          tags: 127.0.0.1:5000/leaguetool-server:latest
         # ssh远程连接服务器
       - name: SSH REMOTE
         uses: appleboy/ssh-action@master
