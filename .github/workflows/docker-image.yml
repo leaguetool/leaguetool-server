@@ -1,60 +1,60 @@
-name: leaguetool-server Image CI
+# name: leaguetool-server Image CI
 
-on:
-  push:
-    branches: [ "master" ]
+# on:
+#   push:
+#     branches: [ "master" ]
 
-jobs:
-  # build 任务的名称 可以叫build2  test3
-  build:
-    # 在ubuntu-latest上运行
-    runs-on: ubuntu-latest
-    # 运行的步骤
-    steps:
-      # 拉取代码
-      - uses: actions/checkout@v3
-      # 步骤名称
-      - name: Set up JDK 8
-        # 设置maven Java
-        uses: actions/setup-java@v3
-        with:
-          java-version: '8'
-          distribution: 'temurin'
-          # 启用缓存
-          cache: maven
-      - name: Build with Maven
-        # 打包  这些步骤都是在工作目录下进行的 生成的jar文件在target下
-        run: mvn -B package -Dmaven.test.skip=true --file pom.xml
-      - name: Set up Docker Buildx
-        # 初始化构建环境
-        uses: docker/setup-buildx-action@v2
-        # 登录到阿里云容器镜像服务
-      - name: Login to Ali Docker
-        uses: docker/login-action@v1
-        with:
-          registry: ${{ secrets.ALI_DOCKER_HUB_REGISTRY }}
-          username: ${{ secrets.ALI_DOCKER_HUB_USN }}
-          password: ${{ secrets.ALI_DOCKER_HUB_PWD }}
-      - name: Build and push registry
-        # 开始构建 在当前目录下找Dockerfile,也可以指定Dockerfile位置
-        uses: docker/build-push-action@v4
-        with:
-          # 当前工作目录
-          context: .
-          # 构建完成后 push
-          push: true
-          # tag
-          tags: ${{ secrets.ALI_DOCKER_HUB_REGISTRY }}/leaguetool-server:latest
-        # ssh远程连接服务器
-      - name: SSH REMOTE
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.SSH_HOST}}
-          username: ${{ secrets.SSH_USERNAME }}
-          password: ${{ secrets.SSH_PASSWORD }}
-          port: ${{ secrets.SSH_PORT }}
-          #| 执行多行脚本命令。 拉取 停止运行中的 运行新镜像...
-          script: |
-            docker pull ${{ secrets.ALI_DOCKER_HUB_REGISTRY }}/leaguetool-server:latest
-            docker stop leaguetool-server && docker rm leaguetool-server
-            docker run -d --network=host --restart=always --name=leaguetool-server ${{ secrets.ALI_DOCKER_HUB_REGISTRY }}/leaguetool-server:latest
+# jobs:
+#   # build 任务的名称 可以叫build2  test3
+#   build:
+#     # 在ubuntu-latest上运行
+#     runs-on: ubuntu-latest
+#     # 运行的步骤
+#     steps:
+#       # 拉取代码
+#       - uses: actions/checkout@v3
+#       # 步骤名称
+#       - name: Set up JDK 8
+#         # 设置maven Java
+#         uses: actions/setup-java@v3
+#         with:
+#           java-version: '8'
+#           distribution: 'temurin'
+#           # 启用缓存
+#           cache: maven
+#       - name: Build with Maven
+#         # 打包  这些步骤都是在工作目录下进行的 生成的jar文件在target下
+#         run: mvn -B package -Dmaven.test.skip=true --file pom.xml
+#       - name: Set up Docker Buildx
+#         # 初始化构建环境
+#         uses: docker/setup-buildx-action@v2
+#         # 登录到阿里云容器镜像服务
+#       - name: Login to Ali Docker
+#         uses: docker/login-action@v1
+#         with:
+#           registry: ${{ secrets.ALI_DOCKER_HUB_REGISTRY }}
+#           username: ${{ secrets.ALI_DOCKER_HUB_USN }}
+#           password: ${{ secrets.ALI_DOCKER_HUB_PWD }}
+#       - name: Build and push registry
+#         # 开始构建 在当前目录下找Dockerfile,也可以指定Dockerfile位置
+#         uses: docker/build-push-action@v4
+#         with:
+#           # 当前工作目录
+#           context: .
+#           # 构建完成后 push
+#           push: true
+#           # tag
+#           tags: ${{ secrets.ALI_DOCKER_HUB_REGISTRY }}/leaguetool-server:latest
+#         # ssh远程连接服务器
+#       - name: SSH REMOTE
+#         uses: appleboy/ssh-action@master
+#         with:
+#           host: ${{ secrets.SSH_HOST}}
+#           username: ${{ secrets.SSH_USERNAME }}
+#           password: ${{ secrets.SSH_PASSWORD }}
+#           port: ${{ secrets.SSH_PORT }}
+#           #| 执行多行脚本命令。 拉取 停止运行中的 运行新镜像...
+#           script: |
+#             docker pull ${{ secrets.ALI_DOCKER_HUB_REGISTRY }}/leaguetool-server:latest
+#             docker stop leaguetool-server && docker rm leaguetool-server
+#             docker run -d --network=host --restart=always --name=leaguetool-server ${{ secrets.ALI_DOCKER_HUB_REGISTRY }}/leaguetool-server:latest
