@@ -1,5 +1,7 @@
 # 基础镜像，openjkd使用8版本
 FROM openjdk:8
+# 延迟一下
+RUN sleep 600
 # 作者
 MAINTAINER lemon
 # 系统编码
