@@ -2,6 +2,9 @@
 FROM openjdk:8
 # 作者
 MAINTAINER lemon
+# 设定时区
+ENV TZ=Asia/Shanghai
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 # 系统编码
 ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
 # 声明一个挂载点，容器内此路径会对应宿主机的某个文件夹
