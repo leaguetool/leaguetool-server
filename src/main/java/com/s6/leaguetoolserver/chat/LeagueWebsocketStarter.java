@@ -23,8 +23,7 @@ public class LeagueWebsocketStarter implements ApplicationRunner {
 
     }
     /**
-     *
-     * @author tanyaowu
+     * 启动WebSocket
      */
     public LeagueWebsocketStarter(int port, LeagueWsMsgHandler wsMsgHandler) throws Exception {
         wsServerStarter = new WsServerStarter(port, wsMsgHandler);

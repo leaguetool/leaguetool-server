@@ -50,9 +50,10 @@ public class LeagueServerAioListener extends WsServerAioListener {
             int i = Tio.groupCount(channelContext.tioConfig, area);
             //服务器总共还有多少人
             int count = Tio.getAllChannelContexts(channelContext.tioConfig).getObj().size();
-            log.info("大区【{}】剩余{}人,服务器总共还有{}人",area,i,count);
+            log.info("onBeforeClose: 当前用户id：{},大区【{}】剩余{}人,服务器总共还有{}人", channelContext.userid, area, i, count);
             //群发给所在大区的所有人改变热度
             int hot = HotUtils.getHot(count);
+
 //            String msg = channelContext.getClientNode().toString() + " 离开了，现在共有【" + count + "】人在线";
             //用tio-websocket，服务器发送到客户端的Packet都是WsResponse
 //            WsResponse wsResponse = WsResponse.fromText(msg, LeagueServerConfig.CHARSET);

@@ -3,15 +3,11 @@ package com.s6.leaguetoolserver.chat.handler;
 import cn.hutool.core.util.IdUtil;
 import com.alibaba.fastjson.JSON;
 import com.s6.leaguetoolserver.chat.commen.ChatUtils;
-import com.s6.leaguetoolserver.chat.commen.HotUtils;
 import com.s6.leaguetoolserver.chat.config.LeagueServerConfig;
-import com.s6.leaguetoolserver.chat.packages.BaseInfo;
 import com.s6.leaguetoolserver.chat.packages.OtherPak;
 import com.s6.leaguetoolserver.chat.packages.Package;
 import com.s6.leaguetoolserver.chat.packages.enums.MessageType;
 import com.s6.leaguetoolserver.chat.packages.enums.OtherPakType;
-import com.s6.leaguetoolserver.enums.UserStatusEnum;
-import com.s6.leaguetoolserver.server.user.entity.LeagueUserEntity;
 import com.s6.leaguetoolserver.server.user.service.ILeagueUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,8 +23,8 @@ import org.tio.websocket.common.WsResponse;
 import org.tio.websocket.common.WsSessionContext;
 import org.tio.websocket.server.handler.IWsMsgHandler;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 @Component
 public class LeagueWsMsgHandler implements IWsMsgHandler {
@@ -48,9 +44,8 @@ public class LeagueWsMsgHandler implements IWsMsgHandler {
     @Autowired
     ILeagueUserService leagueUserService;
 
-    public Map<MessageType, IWsMsgHandler> handlerMap = new HashMap<>();
+    public ConcurrentMap<MessageType, IWsMsgHandler> handlerMap = new ConcurrentHashMap<>();
     private static Logger log = LoggerFactory.getLogger(LeagueWsMsgHandler.class);
-//    public static final LeagueWsMsgHandler me = new LeagueWsMsgHandler();
 
     public LeagueWsMsgHandler(LeagueChatHandler leagueChatHandler, LeagueOtherHandler leagueOtherHandler,LeaguePingHandler leaguePingHandler) {
         handlerMap.put(MessageType.PING, leaguePingHandler);
