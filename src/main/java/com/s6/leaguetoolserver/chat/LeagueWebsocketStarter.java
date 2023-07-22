@@ -5,30 +5,34 @@ import com.s6.leaguetoolserver.chat.handler.LeagueWsMsgHandler;
 import com.s6.leaguetoolserver.chat.listener.LeagueIpStatListener;
 import com.s6.leaguetoolserver.chat.listener.LeagueServerAioListener;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.ApplicationArguments;
-import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 import org.tio.server.ServerTioConfig;
 import org.tio.websocket.server.WsServerStarter;
 
+/**
+ * chat服务启动 跟随Bean实例化启动
+ */
 @Component
-public class LeagueWebsocketStarter implements ApplicationRunner {
+public class LeagueWebsocketStarter{
+    private final WsServerStarter wsServerStarter;
 
     @Autowired
-    LeagueWsMsgHandler leagueWsMsgHandler;
-
-    private WsServerStarter wsServerStarter;
-    private ServerTioConfig serverTioConfig;
-    public LeagueWebsocketStarter(){
-
+    public LeagueWebsocketStarter(LeagueWsMsgHandler leagueWsMsgHandler) throws Exception {
+        this(LeagueServerConfig.SERVER_PORT, leagueWsMsgHandler);
     }
     /**
      * 启动WebSocket
      */
     public LeagueWebsocketStarter(int port, LeagueWsMsgHandler wsMsgHandler) throws Exception {
-        wsServerStarter = new WsServerStarter(port, wsMsgHandler);
-        serverTioConfig = wsServerStarter.getServerTioConfig();
+        this.wsServerStarter = new WsServerStarter(port, wsMsgHandler);
+        this.setServerTioConfig(wsServerStarter.getServerTioConfig());
+        this.doRun();
+    }
+
+    private void setServerTioConfig(ServerTioConfig serverTioConfig) {
+        //服务名
         serverTioConfig.setName(LeagueServerConfig.PROTOCOL_NAME);
+        //Aio监听器
         serverTioConfig.setServerAioListener(LeagueServerAioListener.me);
         //设置ip监控
         serverTioConfig.setIpStatListener(LeagueIpStatListener.me);
@@ -36,49 +40,9 @@ public class LeagueWebsocketStarter implements ApplicationRunner {
         serverTioConfig.ipStats.addDurations(LeagueServerConfig.IpStatDuration.IPSTAT_DURATIONS);
         //设置心跳超时时间
         serverTioConfig.setHeartbeatTimeout(LeagueServerConfig.HEARTBEAT_TIMEOUT);
-//        if (P.getInt("ws.use.ssl", 1) == 1) {
-//            //如果你希望通过wss来访问，就加上下面的代码吧，不过首先你得有SSL证书（证书必须和域名相匹配，否则可能访问不了ssl）
-////            String keyStoreFile = "classpath:config/ssl/keystore.jks";
-////            String trustStoreFile = "classpath:config/ssl/keystore.jks";
-////            String keyStorePwd = "214323428310224";
-//            String keyStoreFile = P.get("ssl.keystore", null);
-//            String trustStoreFile = P.get("ssl.truststore", null);
-//            String keyStorePwd = P.get("ssl.pwd", null);
-//            serverTioConfig.useSsl(keyStoreFile, trustStoreFile, keyStorePwd);
-//        }
     }
-    /**
-     * @author tanyaowu
-     */
-    public void start() throws Exception {
-        LeagueWebsocketStarter appStarter = new LeagueWebsocketStarter(LeagueServerConfig.SERVER_PORT, this.leagueWsMsgHandler);
-        appStarter.wsServerStarter.start();
-    }
-    /**
-     * @return the serverTioConfig
-     */
-    public ServerTioConfig getServerTioConfig() {
-        return serverTioConfig;
-    }
-    public WsServerStarter getWsServerStarter() {
-        return wsServerStarter;
-    }
-//    public static void main(String[] args)  {
-//        try {
-//            //启动websocket server
-//            start();
-//        } catch (Exception e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
 
-    @Override
-    public void run(ApplicationArguments args) throws Exception {
-        try {
-            //启动websocket server
-            start();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+    private void doRun() throws Exception{
+        this.wsServerStarter.start();
     }
 }
