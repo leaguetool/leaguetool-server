@@ -4,29 +4,28 @@ import com.s6.leaguetoolserver.chat.config.LeagueServerConfig;
 import com.s6.leaguetoolserver.chat.handler.LeagueWsMsgHandler;
 import com.s6.leaguetoolserver.chat.listener.LeagueIpStatListener;
 import com.s6.leaguetoolserver.chat.listener.LeagueServerAioListener;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.tio.server.ServerTioConfig;
 import org.tio.websocket.server.WsServerStarter;
+
+import java.io.IOException;
 
 /**
  * chat服务启动 跟随Bean实例化启动
  */
-@Component
+@Configuration
 public class LeagueWebsocketStarter{
-    private final WsServerStarter wsServerStarter;
-
-    @Autowired
-    public LeagueWebsocketStarter(LeagueWsMsgHandler leagueWsMsgHandler) throws Exception {
-        this(LeagueServerConfig.SERVER_PORT, leagueWsMsgHandler);
-    }
-    /**
-     * 启动WebSocket
-     */
-    public LeagueWebsocketStarter(int port, LeagueWsMsgHandler wsMsgHandler) throws Exception {
-        this.wsServerStarter = new WsServerStarter(port, wsMsgHandler);
-        this.setServerTioConfig(wsServerStarter.getServerTioConfig());
-        this.doRun();
+    @Bean
+    public WsServerStarter wsServerStarter(LeagueWsMsgHandler leagueWsMsgHandler) throws IOException {
+        // 设置处理器
+        WsServerStarter wsServerStarter = new WsServerStarter(LeagueServerConfig.SERVER_PORT, leagueWsMsgHandler);
+        // 获取到ServerTioConfig
+        ServerTioConfig serverTioConfig = wsServerStarter.getServerTioConfig();
+        this.setServerTioConfig(serverTioConfig);
+        // 启动
+        wsServerStarter.start();
+        return wsServerStarter;
     }
 
     private void setServerTioConfig(ServerTioConfig serverTioConfig) {
@@ -40,9 +39,5 @@ public class LeagueWebsocketStarter{
         serverTioConfig.ipStats.addDurations(LeagueServerConfig.IpStatDuration.IPSTAT_DURATIONS);
         //设置心跳超时时间
         serverTioConfig.setHeartbeatTimeout(LeagueServerConfig.HEARTBEAT_TIMEOUT);
-    }
-
-    private void doRun() throws Exception{
-        this.wsServerStarter.start();
     }
 }

@@ -62,7 +62,7 @@ public class LeagueOtherHandler implements IWsMsgHandler {
                 int i = Tio.groupCount(channelContext.tioConfig, otherPak.getData());
                 int hot = HotUtils.getHot(i);
                 //发送给大区的人
-                this.send(channelContext, OtherPakType.AREA_HOT,hot);
+                chatUtils.send(channelContext, OtherPakType.AREA_HOT,hot);
                 //同步聊天记录
                 chatUtils.sendChatHistory(channelContext, otherPak.getData());
             case BASE_DATA:
@@ -72,19 +72,5 @@ public class LeagueOtherHandler implements IWsMsgHandler {
         return null;
     }
 
-    /**
-     * 用other推送信息给用户
-     * @param channelContext 通道上下文
-     * @param otherPakType 发送的类型
-     * @param data 要发送的数据
-     */
-    public void send(ChannelContext channelContext,OtherPakType otherPakType, Object data){
-        Package pack = new Package();
-        pack.setType(MessageType.OTHER);
-        //构建一个发送other的token包
-        pack.setData(JSON.toJSONString(OtherPak.builder().otherPakType(otherPakType).data(JSON.toJSONString(data)).build()));
-        WsResponse wsResponse = WsResponse.fromText(JSON.toJSONString(pack), LeagueServerConfig.CHARSET);
-        //发送给用户的id
-        Tio.sendToToken(channelContext.tioConfig,channelContext.getToken(),wsResponse);
-    }
+
 }

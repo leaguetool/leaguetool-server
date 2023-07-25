@@ -8,6 +8,7 @@ import java.util.List;
 
 @Data
 public class BaseInfo implements Serializable {
+    private static final long serialVersionUID = -7383711006107783262L;
     //管理员列表
     public List<User> admins;
     //当前房间热度人员

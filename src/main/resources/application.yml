@@ -47,6 +47,10 @@ spring:
       stat-view-servlet.reset-enable: false
       stat-view-servlet.login-username: cailong
       stat-view-servlet.login-password: cailong520
+  jackson:
+    mapper:
+      accept-case-insensitive-enums: true
+
 mybatis-plus:
   global-config:
     refresh-mapper: true
