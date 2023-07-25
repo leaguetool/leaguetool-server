@@ -1,7 +1,7 @@
 # 基础镜像，openjkd使用8版本
 FROM openjdk:8
 # 作者
-MAINTAINER lemon 83727128@qq.com
+MAINTAINER lemon
 # 设定时区
 ENV TZ=Asia/Shanghai
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
