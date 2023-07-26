@@ -11,7 +11,7 @@ import com.s6.leaguetoolserver.component.ChatSetting;
 import com.s6.leaguetoolserver.model.User;
 import com.s6.leaguetoolserver.server.chatmessage.entity.LeagueChatMessageEntity;
 import com.s6.leaguetoolserver.server.chatmessage.service.ILeagueChatMessageService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.tio.core.ChannelContext;
@@ -23,19 +23,22 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * 聊天工具类
+ * 用于发送消息
+ * 用于发送基础信息
+ * 用于发送token
+ * 用于发送当前大区热度
+ * 用于发送历史记录
+ * 用于持久化聊天
+ */
 @Component
+@RequiredArgsConstructor
 public class ChatUtils {
 
-    AdminUsers adminUsers;
-    ChatSetting chatSetting;
-    ILeagueChatMessageService chatMessageService;
-
-    @Autowired
-    public ChatUtils(AdminUsers adminUsers, ChatSetting chatSetting,ILeagueChatMessageService chatMessageService) {
-        this.adminUsers = adminUsers;
-        this.chatSetting = chatSetting;
-        this.chatMessageService = chatMessageService;
-    }
+    private final AdminUsers adminUsers;
+    private final ChatSetting chatSetting;
+    private final ILeagueChatMessageService chatMessageService;
 
     /**
      * 构建基础信息发送
@@ -43,10 +46,9 @@ public class ChatUtils {
      */
     public void initBaseInfo(ChannelContext channelContext){
         BaseInfo baseInfo = new BaseInfo();
-        List<User> admins = adminUsers.getUsers().stream().map(user -> {
+        List<User> admins = adminUsers.getUsers().stream().peek(user -> {
             SetWithLock<ChannelContext> setWithLock = Tio.getByUserid(channelContext.getTioConfig(), user.getUid());
             user.setOnline(null != setWithLock);
-            return user;
         }).collect(Collectors.toList());
         //管理员
         baseInfo.setAdmins(admins);
@@ -58,14 +60,12 @@ public class ChatUtils {
 
     /**
      * 发送token
-     * @param channelContext
+     * @param channelContext 上下文
      */
     public void sendToken(ChannelContext channelContext){
         String token = channelContext.getToken();
-        Package pack = new Package();
-        pack.setType(MessageType.OTHER);
         //构建一个发送other的token包
-        pack.setData(JSON.toJSONString(OtherPak.builder().otherPakType(OtherPakType.SEND_TOKEN).data(token).build()));
+        Package pack = Package.of(MessageType.OTHER, JSON.toJSONString(OtherPak.builder().otherPakType(OtherPakType.SEND_TOKEN).data(token).build()));
         WsResponse wsResponse = WsResponse.fromText(JSON.toJSONString(pack), LeagueServerConfig.CHARSET);
         //发送给用户的id
         Tio.sendToToken(channelContext.tioConfig,token,wsResponse);
@@ -73,7 +73,7 @@ public class ChatUtils {
 
     /**
      * 发送当前大区热度
-     * @param channelContext
+     * @param channelContext 上下文
      */
     public void sendInitHot(ChannelContext channelContext,String region){
         int i = Tio.groupCount(channelContext.tioConfig, region);
@@ -101,10 +101,8 @@ public class ChatUtils {
      * @param data 要发送的数据
      */
     public void send(ChannelContext channelContext,OtherPakType otherPakType, Object data){
-        Package pack = new Package();
-        pack.setType(MessageType.OTHER);
         //构建一个发送other的token包
-        pack.setData(JSON.toJSONString(OtherPak.builder().otherPakType(otherPakType).data(JSON.toJSONString(data)).build()));
+        Package pack = Package.of(MessageType.OTHER, JSON.toJSONString(OtherPak.builder().otherPakType(otherPakType).data(JSON.toJSONString(data)).build()));
         WsResponse wsResponse = WsResponse.fromText(JSON.toJSONString(pack), LeagueServerConfig.CHARSET);
         //发送给用户的id
         Tio.sendToToken(channelContext.tioConfig,channelContext.getToken(),wsResponse);
@@ -112,7 +110,7 @@ public class ChatUtils {
 
     /**
      * 持久化聊天
-     * @param chatMessage
+     * @param chatMessage 聊天消息
      */
     @Async
     public void saveMessage(ChatMessage chatMessage){

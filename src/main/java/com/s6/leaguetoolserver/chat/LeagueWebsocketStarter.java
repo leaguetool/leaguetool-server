@@ -1,7 +1,7 @@
 package com.s6.leaguetoolserver.chat;
 
 import com.s6.leaguetoolserver.chat.config.LeagueServerConfig;
-import com.s6.leaguetoolserver.chat.handler.LeagueWsMsgHandler;
+import com.s6.leaguetoolserver.chat.handler.impl.LeagueDefaultHandler;
 import com.s6.leaguetoolserver.chat.listener.LeagueIpStatListener;
 import com.s6.leaguetoolserver.chat.listener.LeagueServerAioListener;
 import org.springframework.context.annotation.Bean;
@@ -16,10 +16,16 @@ import java.io.IOException;
  */
 @Configuration
 public class LeagueWebsocketStarter{
+    /**
+     * 启动服务
+     * @param leagueDefaultHandler 默认处理器
+     * @return {@link WsServerStarter} 服务启动器
+     * @throws IOException IO异常
+     */
     @Bean
-    public WsServerStarter wsServerStarter(LeagueWsMsgHandler leagueWsMsgHandler) throws IOException {
+    public WsServerStarter wsServerStarter(LeagueDefaultHandler leagueDefaultHandler) throws IOException {
         // 设置处理器
-        WsServerStarter wsServerStarter = new WsServerStarter(LeagueServerConfig.SERVER_PORT, leagueWsMsgHandler);
+        WsServerStarter wsServerStarter = new WsServerStarter(LeagueServerConfig.SERVER_PORT, leagueDefaultHandler);
         // 获取到ServerTioConfig
         ServerTioConfig serverTioConfig = wsServerStarter.getServerTioConfig();
         this.setServerTioConfig(serverTioConfig);
@@ -28,6 +34,10 @@ public class LeagueWebsocketStarter{
         return wsServerStarter;
     }
 
+    /**
+     * 设置服务配置
+     * @param serverTioConfig 服务配置
+     */
     private void setServerTioConfig(ServerTioConfig serverTioConfig) {
         //服务名
         serverTioConfig.setName(LeagueServerConfig.PROTOCOL_NAME);

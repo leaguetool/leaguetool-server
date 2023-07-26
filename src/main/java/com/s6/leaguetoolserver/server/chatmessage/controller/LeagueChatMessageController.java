@@ -2,7 +2,7 @@ package com.s6.leaguetoolserver.server.chatmessage.controller;
 
 import cn.hutool.core.lang.Pair;
 import com.alibaba.fastjson.JSON;
-import com.s6.leaguetoolserver.chat.handler.LeagueChatHandler;
+import com.s6.leaguetoolserver.chat.handler.impl.LeagueChatHandler;
 import com.s6.leaguetoolserver.chat.packages.Package;
 import com.s6.leaguetoolserver.model.R;
 import org.apache.commons.lang3.StringUtils;

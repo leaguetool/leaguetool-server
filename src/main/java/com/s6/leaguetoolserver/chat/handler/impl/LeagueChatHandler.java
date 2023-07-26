@@ -1,4 +1,4 @@
-package com.s6.leaguetoolserver.chat.handler;
+package com.s6.leaguetoolserver.chat.handler.impl;
 
 import cn.hutool.core.lang.Pair;
 import cn.hutool.core.util.IdUtil;
@@ -7,69 +7,68 @@ import cn.hutool.extra.spring.SpringUtil;
 import com.alibaba.fastjson.JSON;
 import com.s6.leaguetoolserver.chat.commen.ChatUtils;
 import com.s6.leaguetoolserver.chat.config.LeagueServerConfig;
+import com.s6.leaguetoolserver.chat.handler.AbstractHandler;
 import com.s6.leaguetoolserver.chat.packages.ChatMessage;
 import com.s6.leaguetoolserver.chat.packages.Package;
+import com.s6.leaguetoolserver.chat.packages.enums.HandlerType;
+import com.s6.leaguetoolserver.chat.packages.enums.MessageType;
 import com.s6.leaguetoolserver.component.ChatSetting;
 import com.s6.leaguetoolserver.component.emoji.Emoji;
 import com.s6.leaguetoolserver.enums.UserStatusEnum;
 import com.s6.leaguetoolserver.server.user.entity.LeagueUserEntity;
 import com.s6.leaguetoolserver.server.user.service.ILeagueUserService;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.tio.core.ChannelContext;
 import org.tio.core.Tio;
-import org.tio.http.common.HttpRequest;
-import org.tio.http.common.HttpResponse;
 import org.tio.utils.lock.SetWithLock;
 import org.tio.websocket.common.WsRequest;
 import org.tio.websocket.common.WsResponse;
 import org.tio.websocket.server.WsServerStarter;
-import org.tio.websocket.server.handler.IWsMsgHandler;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static com.s6.leaguetoolserver.chat.packages.enums.MessageType.CHAT;
 
+/**
+ * @author cailong
+ * 聊天处理器, 用于处理聊天消息
+ */
 @Component
-public class LeagueChatHandler implements IWsMsgHandler {
+@RequiredArgsConstructor
+public class LeagueChatHandler extends AbstractHandler {
 
     //创建日志工厂
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(LeagueChatHandler.class);
 
-    @Autowired
-    ChatUtils chatUtils;
+    private final ChatUtils chatUtils;
 
-    @Autowired
-    ILeagueUserService leagueUserService;
+    private final ILeagueUserService leagueUserService;
 
-    @Autowired
-    WsServerStarter serverStarter;
+    private final WsServerStarter serverStarter;
 
+    /**
+     * 获取处理器类型 {@link HandlerType}
+     * @see HandlerType#CHAT
+     * @see MessageType#CHAT
+     * @return 处理器类型 {@link HandlerType}
+     */
     @Override
-    public HttpResponse handshake(HttpRequest httpRequest, HttpResponse httpResponse, ChannelContext channelContext) throws Exception {
-        return null;
+    public Pair<HandlerType, MessageType> getHandlerType() {
+        return Pair.of(HandlerType.CHAT, MessageType.CHAT);
     }
 
+    /**
+     * 处理消息
+     * @param wsRequest 请求 {@link WsRequest}
+     * @param text 消息 {@link String}
+     * @param channelContext 通道上下文 {@link ChannelContext}
+     */
     @Override
-    public void onAfterHandshaked(HttpRequest httpRequest, HttpResponse httpResponse, ChannelContext channelContext) throws Exception {
-
-    }
-
-    @Override
-    public Object onBytes(WsRequest wsRequest, byte[] bytes, ChannelContext channelContext) throws Exception {
-        return null;
-    }
-
-    @Override
-    public Object onClose(WsRequest wsRequest, byte[] bytes, ChannelContext channelContext) throws Exception {
-        return null;
-    }
-
-    @Override
-    public Object onText(WsRequest wsRequest, String text, ChannelContext channelContext) throws Exception {
+    public void onMessage(WsRequest wsRequest, String text, ChannelContext channelContext) {
         //聊天
         Package pack = JSON.parseObject(text, Package.class);
         ChatMessage chatMessage = JSON.parseObject(pack.getData(), ChatMessage.class);
@@ -77,13 +76,12 @@ public class LeagueChatHandler implements IWsMsgHandler {
         //如果检测账号异常，那么就不继续往下处理
         boolean checkUserStatus = checkUserStatus(chatMessage.getUid());
         if(checkUserStatus) {
-            return null;
+            return;
         }
         //处理聊天信息并且发送
         chatInformationProcess(pack, chatMessage, channelContext);
         //保存数据
         chatUtils.saveMessage(chatMessage);
-        return null;
     }
 
     /**
@@ -159,7 +157,7 @@ public class LeagueChatHandler implements IWsMsgHandler {
     private void emojiParse(ChatMessage chatMessage){
         AtomicReference<String> content = new AtomicReference<>(chatMessage.getContent());
         //找出用了哪些表情包
-        List<String> useEmoji = ReUtil.findAll("\\[([^\\s\\[\\]]+?)\\]", content.get(), 1, new ArrayList<String>()) ;
+        List<String> useEmoji = ReUtil.findAll("\\[([^\\s\\[\\]]+?)\\]", content.get(), 1, new ArrayList<>()) ;
         if (useEmoji.isEmpty()) {
             return;
         }
@@ -168,9 +166,7 @@ public class LeagueChatHandler implements IWsMsgHandler {
         Map<String,String> reMap = new HashMap<>();
         for (Emoji emoji : chatSetting.getEmoji()) {
             List<Emoji> data = emoji.getData();
-            data.forEach(item -> {
-                reMap.put(item.getText(), item.getEmoji());
-            });
+            data.forEach(item -> reMap.put(item.getText(), item.getEmoji()));
         }
         if(reMap.isEmpty()){
             return;

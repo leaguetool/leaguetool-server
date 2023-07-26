@@ -24,4 +24,23 @@ public class Package implements Serializable {
      * 包数据
      */
     private String data;
+
+    /**
+     * 包数据
+     * @param type 包类型
+     * @return 包
+     */
+    public static Package of(MessageType type) {
+        return of(type, null);
+    }
+
+    /**
+     * 包数据
+     * @param type 包类型
+     * @param data 包数据
+     * @return 包
+     */
+    public static Package of(MessageType type, String data) {
+        return new Package(type, data);
+    }
 }
