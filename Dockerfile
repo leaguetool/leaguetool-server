@@ -14,7 +14,7 @@ ENV PROJECT_PATH /home/$PROJECT_NAME
 
 WORKDIR $PROJECT_PATH
 # 应用构建成功后的jar文件被复制到镜像内 路径是WORKDIR目录下
-COPY target/leaguetool-server-0.0.1-SNAPSHOT.jar leaguetool-server.jar
+COPY leaguetool-web/target/leaguetool-web-0.0.1-SNAPSHOT.jar leaguetool-server.jar
 # 启动容器时的进程
 ENTRYPOINT ["java","-Dspring.profiles.active=prod","-jar","leaguetool-server.jar"]
 # 暴露9999端口
