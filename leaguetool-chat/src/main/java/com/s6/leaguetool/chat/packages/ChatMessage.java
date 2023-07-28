@@ -1,13 +1,15 @@
 package com.s6.leaguetool.chat.packages;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import com.s6.leaguetool.model.LeagueChatMessageEntity;
 
 import java.io.Serializable;
 
-@Data
+/**
+ * 聊天消息
+ */
+@Setter
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 public class ChatMessage implements Serializable {

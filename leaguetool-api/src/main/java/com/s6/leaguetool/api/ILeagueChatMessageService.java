@@ -14,7 +14,10 @@ import java.util.List;
  * @since 2022-10-26
  */
 public interface ILeagueChatMessageService extends IService<LeagueChatMessageEntity> {
-
+    /**
+     * 添加聊天记录
+     * @param messageEntity 聊天记录实体
+     */
     void addMessage(LeagueChatMessageEntity messageEntity);
 
     /**

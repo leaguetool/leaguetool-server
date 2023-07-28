@@ -34,7 +34,7 @@ public enum UserStatusEnum implements Serializable, IEnum<Integer> {
     }
 
     @JsonValue
-    public Map getResult(){
+    public Map<String, Object> getResult(){
         Map<String, Object> map = new LinkedHashMap<String, Object>();
         map.put("code", getCode());
         map.put("desc", getDesc());

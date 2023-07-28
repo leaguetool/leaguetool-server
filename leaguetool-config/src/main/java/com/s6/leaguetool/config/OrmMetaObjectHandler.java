@@ -8,21 +8,29 @@ import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
+/**
+ * mybatis-plus自动填充处理类
+ */
 @Slf4j
 @Component
 public class OrmMetaObjectHandler implements MetaObjectHandler {
-
+    /**
+     * 插入填充
+     * @param metaObject 元对象
+     */
     public void insertFill(MetaObject metaObject) {
-//        log.info("插入时自动填充...");
         this.setFieldValByName("createTime", new Date(), metaObject);
         this.setFieldValByName("updateTime", new Date(), metaObject);
         this.setFieldValByName("version", 0L, metaObject);
         this.setFieldValByName("enable", LogicDeleteEnum.DEFAULT, metaObject);
     }
 
+    /**
+     * 更新填充
+     * @param metaObject 元对象
+     */
     @Override
     public void updateFill(MetaObject metaObject) {
-//        log.info("更新时自动填充...");
         this.setFieldValByName("updateTime", new Date(), metaObject);
     }
 }

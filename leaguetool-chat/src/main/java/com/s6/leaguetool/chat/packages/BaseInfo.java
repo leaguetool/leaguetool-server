@@ -1,12 +1,18 @@
 package com.s6.leaguetool.chat.packages;
 
-import lombok.Data;
+import lombok.*;
 import com.s6.leaguetool.model.User;
 
 import java.io.Serializable;
 import java.util.List;
 
-@Data
+/**
+ * 基础信息
+ */
+@Setter
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class BaseInfo implements Serializable {
     private static final long serialVersionUID = -7383711006107783262L;
     //管理员列表

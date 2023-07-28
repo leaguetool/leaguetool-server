@@ -1,5 +1,8 @@
 package com.s6.leaguetool.chat.commen;
 
+/**
+ * 热度工具类
+ */
 public class HotUtils {
 
     /**

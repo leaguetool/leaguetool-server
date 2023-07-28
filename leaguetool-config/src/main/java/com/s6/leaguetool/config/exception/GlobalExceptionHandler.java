@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.io.IOException;
 
 /**
+ *
  * @description: 全局异常处理
  */
 @ControllerAdvice
@@ -26,163 +27,149 @@ public class GlobalExceptionHandler {
 
     /**
      * 自定义异常
-     *
-     * @param ex
-     * @return
+     * @param ex 自定义异常
+     * @return R
      */
     @ExceptionHandler({GlobalException.class})
     @ResponseBody
-    public R globalException(GlobalException ex) {
+    public R<GlobalException> globalException(GlobalException ex) {
         return resultFormatNoData(ex.getCode(), ex.getMsg(), ex);
     }
 
 
     /**
      * 运行时异常
-     *
-     * @param ex
-     * @return
+     * @param ex 运行时异常
+     * @return R
      */
     @ExceptionHandler(RuntimeException.class)
     @ResponseBody
-    public R runtimeExceptionHandler(RuntimeException ex) {
+    public R<RuntimeException> runtimeExceptionHandler(RuntimeException ex) {
         return resultFormat(HttpResultEnum.RUN_EXCEPTION.getCode(), "运行时异常", ex);
     }
 
     /**
      * 空指针异常
-     *
-     * @param ex
-     * @return
+     * @param ex 空指针异常
+     * @return R
      */
     @ExceptionHandler(NullPointerException.class)
     @ResponseBody
-    public R nullPointerExceptionHandler(NullPointerException ex) {
+    public R<NullPointerException> nullPointerExceptionHandler(NullPointerException ex) {
         return resultFormat(HttpResultEnum.ERR_500_EXCEPTION.getCode(), ex.getMessage(), ex);
     }
 
     /**
      * 类型转换异常
-     *
-     * @param ex
-     * @return
+     * @param ex 类型转换异常
+     * @return R
      */
     @ExceptionHandler(ClassCastException.class)
     @ResponseBody
-    public R classCastExceptionHandler(ClassCastException ex) {
+    public R<ClassCastException> classCastExceptionHandler(ClassCastException ex) {
         return resultFormat(HttpResultEnum.CONVERT_EXCEPTION.getCode(), "类型转换异常", ex);
     }
 
     /**
      * IO异常
-     *
-     * @param ex
-     * @return
+     * @param ex IO异常
+     * @return R
      */
     @ExceptionHandler(IOException.class)
     @ResponseBody
-    public R iOExceptionHandler(IOException ex) {
+    public R<IOException> iOExceptionHandler(IOException ex) {
         return resultFormat(HttpResultEnum.IO_EXCEPTION.getCode(), "IO异常", ex);
     }
 
     /**
      * 未知方法异常
-     *
-     * @param ex
-     * @return
+     * @param ex 未知方法异常
+     * @return R
      */
     @ExceptionHandler(NoSuchMethodException.class)
     @ResponseBody
-    public R noSuchMethodExceptionHandler(NoSuchMethodException ex) {
+    public R<NoSuchMethodException> noSuchMethodExceptionHandler(NoSuchMethodException ex) {
         return resultFormat(HttpResultEnum.UNKNOEWN_EXCEPTION.getCode(), "未知方法异常", ex);
     }
 
     /**
      * 数组越界异常
-     *
-     * @param ex
-     * @return
+     * @param ex 数组越界异常
+     * @return R
      */
     @ExceptionHandler(IndexOutOfBoundsException.class)
     @ResponseBody
-    public R indexOutOfBoundsExceptionHandler(IndexOutOfBoundsException ex) {
+    public R<IndexOutOfBoundsException> indexOutOfBoundsExceptionHandler(IndexOutOfBoundsException ex) {
         return resultFormat(HttpResultEnum.OVERSTEP_EXCEPTION.getCode(), "数组越界异常", ex);
     }
 
     /**
      * 400错误
-     *
-     * @param ex
-     * @return
+     * @param ex 400错误
+     * @return R
      */
     @ExceptionHandler({HttpMessageNotReadableException.class})
     @ResponseBody
-    public R requestNotReadable(HttpMessageNotReadableException ex) {
+    public R<HttpMessageNotReadableException> requestNotReadable(HttpMessageNotReadableException ex) {
         return resultFormat(HttpResultEnum.ERR_400_EXCEPTION.getCode(), "400错误", ex);
     }
 
     /**
      * 400错误
-     *
-     * @param ex
-     * @return
+     * @param ex 400错误
+     * @return R
      */
     @ExceptionHandler({TypeMismatchException.class})
     @ResponseBody
-    public R requestTypeMismatch(TypeMismatchException ex) {
+    public R<TypeMismatchException> requestTypeMismatch(TypeMismatchException ex) {
         return resultFormat(HttpResultEnum.ERR_401_EXCEPTION.getCode(), "400错误", ex);
     }
 
     /**
      * 400错误
-     *
-     * @param ex
-     * @return
+     * @param ex 400错误
+     * @return R
      */
     @ExceptionHandler({MissingServletRequestParameterException.class})
     @ResponseBody
-    public R requestMissingServletRequest(MissingServletRequestParameterException ex) {
-        StringBuilder sb = new StringBuilder("缺少参数: ");
-        sb.append(ex.getParameterName());
-        sb.append("类型: ");
-        sb.append(ex.getParameterType());
+    public R<MissingServletRequestParameterException> requestMissingServletRequest(MissingServletRequestParameterException ex) {
+        String sb = "缺少参数: " + ex.getParameterName() +
+                "类型: " +
+                ex.getParameterType();
 //        return resultFormat(HttpResultEnum.ERR_402_EXCEPTION.getCode(),sb.toString(), ex);
-        return R.fail(HttpResultEnum.ERR_402_EXCEPTION.getCode(), sb.toString(), null);
+        return R.fail(HttpResultEnum.ERR_402_EXCEPTION.getCode(), sb, null);
     }
 
     /**
      * 405错误
-     *
-     * @param ex
-     * @return
+     * @param ex 405错误
+     * @return R
      */
     @ExceptionHandler({HttpRequestMethodNotSupportedException.class})
     @ResponseBody
-    public R request405(HttpRequestMethodNotSupportedException ex) {
+    public R<HttpRequestMethodNotSupportedException> request405(HttpRequestMethodNotSupportedException ex) {
         return resultFormat(HttpResultEnum.ERR_405_EXCEPTION.getCode(), "405错误,请使用标准的请求方式",ex);
     }
 
     /**
      * 406错误
-     *
-     * @param ex
-     * @return
+     * @param ex 406错误
+     * @return R
      */
     @ExceptionHandler({HttpMediaTypeNotAcceptableException.class})
     @ResponseBody
-    public R request406(HttpMediaTypeNotAcceptableException ex) {
+    public R<HttpMediaTypeNotAcceptableException> request406(HttpMediaTypeNotAcceptableException ex) {
         return resultFormat(HttpResultEnum.ERR_406_EXCEPTION.getCode(), "406错误", ex);
     }
 
     /**
      * 500错误
-     *
-     * @param ex
-     * @return
+     * @param ex 500错误
+     * @return R
      */
     @ExceptionHandler({ConversionNotSupportedException.class, HttpMessageNotWritableException.class})
     @ResponseBody
-    public R server500(RuntimeException ex) {
+    public R<RuntimeException> server500(RuntimeException ex) {
         return resultFormat(HttpResultEnum.ERR_500_EXCEPTION.getCode(), "500错误", ex);
     }
 
@@ -201,49 +188,45 @@ public class GlobalExceptionHandler {
 
     /**
      * 栈溢出
-     *
-     * @param ex
-     * @return
+     * @param ex 栈溢出
+     * @return R
      */
     @ExceptionHandler({StackOverflowError.class})
     @ResponseBody
-    public R requestStackOverflow(StackOverflowError ex) {
+    public R<StackOverflowError> requestStackOverflow(StackOverflowError ex) {
         return resultFormat(HttpResultEnum.STACK_OVERFLOW_EXCEPTION.getCode(), "栈溢出", ex);
     }
 
     /**
      * 除数不能为0
-     *
-     * @param ex
-     * @return
+     * @param ex 除数不能为0
+     * @return R
      */
     @ExceptionHandler({ArithmeticException.class})
     @ResponseBody
-    public R arithmeticException(ArithmeticException ex) {
+    public R<ArithmeticException> arithmeticException(ArithmeticException ex) {
         return resultFormat(HttpResultEnum.DIVISOR_ZERO_EXCEPTION.getCode(), "除数不能为0", ex);
     }
 
     /**
      * 断言异常
-     *
-     * @param ex
-     * @return
+     * @param ex 断言异常
+     * @return R
      */
     @ExceptionHandler({IllegalArgumentException.class})
     @ResponseBody
-    public R illegalArgumentException(IllegalArgumentException ex) {
+    public R<IllegalArgumentException> illegalArgumentException(IllegalArgumentException ex) {
         return resultFormat(HttpResultEnum.ERR_500_EXCEPTION.getCode(), ex.getMessage(), ex);
     }
 
     /**
      * 其他错误
-     *
-     * @param ex
-     * @return
+     * @param ex 其他错误
+     * @return R
      */
     @ExceptionHandler({Exception.class})
     @ResponseBody
-    public R exception(Exception ex) {
+    public R<Exception> exception(Exception ex) {
         return resultFormat(15, "未知错误", ex);
     }
 
@@ -301,18 +284,18 @@ public class GlobalExceptionHandler {
 //    }
 
 
-    private <T extends Throwable> R resultFormat(HttpResultEnum httpResultEnum, T ex) {
+    private <T extends Throwable> R<T> resultFormat(HttpResultEnum httpResultEnum, T ex) {
         return resultFormat(httpResultEnum.getCode(),httpResultEnum.getMessage(),ex);
     }
 
-    private <T extends Throwable> R resultFormat(Integer code, String msg, T ex) {
-        R fail = R.fail(code, msg, ex);
+    private <T extends Throwable> R<T> resultFormat(Integer code, String msg, T ex) {
+        R<T> fail = R.fail(code, msg, ex);
         log.warn(msg, ex.getMessage(), ex);
         return fail;
     }
 
-    private <T extends Throwable> R resultFormatNoData(Integer code, String msg, T ex) {
-        R fail = R.fail(code, msg, null);
+    private <T extends Throwable> R<T> resultFormatNoData(Integer code, String msg, T ex) {
+        R<T> fail = R.fail(code, msg, null);
         log.warn(msg, ex.getMessage(), ex);
         return fail;
     }

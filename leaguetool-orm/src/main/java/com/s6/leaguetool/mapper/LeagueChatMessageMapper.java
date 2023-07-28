@@ -14,6 +14,11 @@ import java.util.List;
  * @since 2022-10-26
  */
 public interface LeagueChatMessageMapper extends BaseMapper<LeagueChatMessageEntity> {
-
+    /**
+     * 查询聊天记录
+     * @param region 大区
+     * @param count 数量
+     * @return 聊天记录列表
+     */
     List<LeagueChatMessageEntity> queryChatHistory(String region, Integer count);
 }

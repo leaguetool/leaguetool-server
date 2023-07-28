@@ -1,5 +1,8 @@
 package com.s6.leaguetool.chat.packages.enums;
 
+/**
+ * 其他包类型
+ */
 public enum OtherPakType {
     SEND_TOKEN,
     //切换大区

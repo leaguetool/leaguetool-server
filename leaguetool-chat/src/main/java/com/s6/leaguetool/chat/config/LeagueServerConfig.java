@@ -2,6 +2,9 @@ package com.s6.leaguetool.chat.config;
 
 import org.tio.utils.time.Time;
 
+/**
+ * 一些服务端常量
+ */
 public abstract class LeagueServerConfig {
     /**
      * 协议名字(可以随便取，主要用于开发人员辨识)

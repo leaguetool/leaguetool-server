@@ -3,13 +3,16 @@ package com.s6.leaguetool.chat.commen;
 import com.alibaba.nacos.api.config.ConfigType;
 import com.alibaba.nacos.api.config.annotation.NacosConfigurationProperties;
 import com.s6.leaguetool.emoji.Emoji;
-import lombok.Data;
+import lombok.*;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-@Data
+@Setter
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
 @Component
 @ConfigurationProperties(prefix = "chatsetting")
 @NacosConfigurationProperties(dataId = "leaguetool", prefix = "chatsetting", type = ConfigType.YAML, autoRefreshed = true)

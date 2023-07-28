@@ -1,5 +1,8 @@
 package com.s6.leaguetool.chat.packages.enums;
 
+/**
+ * 消息类型
+ */
 public enum MessageType {
     //ping
     PING,

@@ -6,13 +6,21 @@ import lombok.EqualsAndHashCode;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
+/**
+ * 全局异常
+ */
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class GlobalException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
-
+    /**
+     * 错误信息
+     */
     private String msg;
+    /**
+     * 错误码
+     */
     private int code;
 
     public GlobalException() {
@@ -46,13 +54,10 @@ public class GlobalException extends RuntimeException {
             return "";
         }
         StringWriter sw = new StringWriter();
-        PrintWriter pw = new PrintWriter(sw);
 
-        try {
+        try (PrintWriter pw = new PrintWriter(sw)) {
             throwable.printStackTrace(pw);
             return sw.toString();
-        } finally {
-            pw.close();
         }
     }
 

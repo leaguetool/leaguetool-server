@@ -1,11 +1,17 @@
 package com.s6.leaguetool.model;
 
 import cn.hutool.core.lang.Pair;
-import lombok.Data;
+import lombok.*;
 
 import java.io.Serializable;
 
-@Data
+/**
+ * 统一返回对象
+ * @param <T>
+ */
+@Setter
+@Getter
+@NoArgsConstructor
 public class R<T> implements Serializable {
 
     private static final long serialVersionUID = -1153637214909232321L;
@@ -48,7 +54,7 @@ public class R<T> implements Serializable {
         return new R<>(data,1);
     }
 
-    public static <T extends Throwable> R fail(Integer code, String msg, T ex) {
-        return new R(msg,code,ex);
+    public static <T extends Throwable> R<T> fail(Integer code, String msg, T ex) {
+        return new R<>(msg,code,ex);
     }
 }
