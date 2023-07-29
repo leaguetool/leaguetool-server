@@ -22,8 +22,12 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @MapperScan(basePackages = "com.s6.leaguetool.mapper")
 public class LeaguetoolWebApplication {
 
+    /**
+     * 启动方法
+     * chat服务在 {@link com.s6.leaguetool.chat.LeagueWebsocketStarter} Bean实例化时启动
+     * @param args 参数
+     */
     public static void main(String[] args) {
-        //启动http server
         SpringApplication.run(LeaguetoolWebApplication.class, args);
     }
 }
