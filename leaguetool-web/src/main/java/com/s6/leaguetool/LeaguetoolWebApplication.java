@@ -7,6 +7,14 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableAsync;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
+/**
+ * 启动类
+ * @EnableNacosConfig 开启nacos配置中心
+ * @EnableAsync 开启异步调用
+ * @MapperScan 扫描mapper
+ * @EnableSwagger2 开启swagger
+ * @SpringBootApplication 启动类注解
+ */
 @SpringBootApplication
 @EnableSwagger2
 @EnableNacosConfig
