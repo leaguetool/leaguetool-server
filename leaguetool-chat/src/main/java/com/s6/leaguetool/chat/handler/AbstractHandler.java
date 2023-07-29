@@ -102,7 +102,8 @@ public abstract class AbstractHandler implements LeagueHandler, ApplicationConte
     @Override
     public Object onText(WsRequest wsRequest, String text, ChannelContext channelContext) {
         WsSessionContext wsSessionContext = (WsSessionContext) channelContext.get();
-        HttpRequest httpRequest = wsSessionContext.getHandshakeRequest();//获取websocket握手包
+        //获取websocket握手包
+        HttpRequest httpRequest = wsSessionContext.getHandshakeRequest();
         if (log.isDebugEnabled()) {
             log.debug("握手包:{}", httpRequest);
         }

@@ -7,7 +7,7 @@ import com.s6.leaguetool.model.dto.LoginResult;
 
 /**
  * <p>
- *  服务类
+ *  用户信息服务类
  * </p>
  *
  * @author cailong
