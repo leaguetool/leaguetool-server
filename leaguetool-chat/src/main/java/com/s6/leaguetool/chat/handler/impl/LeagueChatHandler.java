@@ -79,6 +79,7 @@ public class LeagueChatHandler extends AbstractHandler {
         //如果检测账号异常，那么就不继续往下处理
         boolean checkUserStatus = checkUserStatus(chatMessage.getUid());
         if(checkUserStatus) {
+            log.info("{}处理器, 消息未发出, 原因是: [{}]账号状态异常 ", this.getHandlerType().getValue().name(), chatMessage.getUid());
             return;
         }
         //处理聊天信息并且发送
@@ -100,7 +101,7 @@ public class LeagueChatHandler extends AbstractHandler {
         ChatMessage chatMessage = JSON.parseObject(pack.getData(), ChatMessage.class);
         SetWithLock<ChannelContext> userChannelContext = Tio.getByUserid(serverStarter.getServerTioConfig(), chatMessage.getUid());
         //判断用户是否在线
-        if(userChannelContext == null || userChannelContext.getObj().size() == 0){
+        if(userChannelContext == null || userChannelContext.getObj().isEmpty()){
             return Pair.of(false, "发送失败,当前用户不在线");
         }
         //取出用户的channel

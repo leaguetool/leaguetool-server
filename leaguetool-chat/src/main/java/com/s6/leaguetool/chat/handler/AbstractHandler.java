@@ -114,6 +114,12 @@ public abstract class AbstractHandler implements LeagueHandler, ApplicationConte
             log.error("解析网络包异常,userId: {}, package: {}", channelContext.userid, text);
             throw new RuntimeException(e);
         }
+        //判断pack里面是否为空
+        if(null == pak.getType()){
+            log.error("网络包类型异常,userId: {}, package: {}", channelContext.userid, text);
+            return null;
+
+        }
         MessageType type = pak.getType();
         LeagueHandler leagueHandler = getMessageHandler(type);
         if(null == leagueHandler){

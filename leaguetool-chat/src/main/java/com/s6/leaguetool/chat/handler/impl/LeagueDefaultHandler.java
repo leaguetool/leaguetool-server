@@ -65,8 +65,9 @@ public class LeagueDefaultHandler extends AbstractHandler {
         String region = request.getParam("region");
         String uuid = IdUtil.objectId();
         String uid = request.getParam("uid");
+        //如果uid或者region为空, 就不握手进行链接
         if(!StringUtils.hasText(uid) || !StringUtils.hasText(region)){
-            return httpResponse;
+            return null;
         }
         //如果是游客就使用生成的uuid
         if("tourist".equals(uid)){
