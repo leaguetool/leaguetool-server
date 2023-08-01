@@ -2,6 +2,7 @@ package com.s6.leaguetool.chat.handler.impl;
 
 import com.s6.leaguetool.chat.config.LeagueServerConfig;
 import com.s6.leaguetool.chat.handler.AbstractHandler;
+import com.s6.leaguetool.chat.packages.Ping;
 import com.s6.leaguetool.chat.packages.enums.HandlerType;
 import com.s6.leaguetool.chat.packages.enums.MessageType;
 import com.s6.leaguetool.chat.packages.Package;
@@ -21,7 +22,8 @@ import org.tio.websocket.common.WsResponse;
  * @see <a href="https://tools.ietf.org/html/rfc6455#section-5.5.2">PING PONG</a>
  */
 @Component
-public class LeaguePingHandler extends AbstractHandler {
+public class LeaguePingHandler extends AbstractHandler<Ping> {
+
     /**
      * 获取处理器类型 {@link HandlerType}
      * @return 处理器类型 {@link HandlerType}
@@ -36,11 +38,11 @@ public class LeaguePingHandler extends AbstractHandler {
     /**
      * 处理消息
      * @param wsRequest 请求 {@link WsRequest}
-     * @param text 消息 {@link String}
+     * @param data 消息 {@link Ping} 一般是没有数据的
      * @param channelContext 通道上下文 {@link ChannelContext}
      */
     @Override
-    public void onMessage(WsRequest wsRequest, String text, ChannelContext channelContext) {
+    public void onMessage(WsRequest wsRequest, Ping data, ChannelContext channelContext) {
         WsResponse wsResponse = WsResponse.fromText(JSON.toJSONString(Package.of(MessageType.PONG)), LeagueServerConfig.CHARSET);
         //发送给用户的id
         Tio.sendToToken(channelContext.tioConfig, channelContext.getToken(), wsResponse);

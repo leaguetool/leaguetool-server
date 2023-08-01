@@ -12,7 +12,7 @@ import org.tio.websocket.server.handler.IWsMsgHandler;
  * 处理器接口
  * DEFAULT 默认处理器
  */
-public interface LeagueHandler extends IWsMsgHandler {
+public interface LeagueHandler<T> extends IWsMsgHandler {
     /**
      * 获取处理器类型 {@link HandlerType}
      * @return 处理器类型 {@link HandlerType}
@@ -22,9 +22,9 @@ public interface LeagueHandler extends IWsMsgHandler {
     /**
      * 处理消息
      * @param wsRequest 请求 {@link WsRequest}
-     * @param text 消息 {@link String}
+     * @param data 消息 {@link T}
      * @param channelContext 通道上下文 {@link ChannelContext}
      */
-    void onMessage(WsRequest wsRequest, String text, ChannelContext channelContext);
+    void onMessage(WsRequest wsRequest, T data, ChannelContext channelContext);
 
 }

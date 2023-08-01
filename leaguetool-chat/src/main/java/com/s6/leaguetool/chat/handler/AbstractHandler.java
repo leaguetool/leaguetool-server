@@ -5,7 +5,6 @@ import com.s6.leaguetool.chat.packages.enums.HandlerType;
 import com.s6.leaguetool.chat.packages.enums.MessageType;
 import com.s6.leaguetool.chat.packages.Package;
 import cn.hutool.core.lang.Pair;
-import com.alibaba.fastjson.JSON;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,9 +17,13 @@ import org.tio.http.common.HttpResponse;
 import org.tio.websocket.common.WsRequest;
 import org.tio.websocket.common.WsSessionContext;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+
+import static com.alibaba.fastjson.JSON.parseObject;
 
 /**
  * @author cailong
@@ -30,9 +33,9 @@ import java.util.concurrent.ConcurrentMap;
  * @see LeagueHandler
  * @see AbstractHandler
  */
-public abstract class AbstractHandler implements LeagueHandler, ApplicationContextAware {
+public abstract class AbstractHandler<T> implements LeagueHandler<T>, ApplicationContextAware {
 
-    protected final ConcurrentMap<MessageType, LeagueHandler> leagueHandlerConcurrentMap = new ConcurrentHashMap<>();
+    protected final ConcurrentMap<MessageType, LeagueHandler<T>> leagueHandlerConcurrentMap = new ConcurrentHashMap<>();
 
     private ApplicationContext applicationContext;
 
@@ -41,10 +44,10 @@ public abstract class AbstractHandler implements LeagueHandler, ApplicationConte
     /**
      * 抽象方法, 所有处理器都需要实现这个方法
      * @param wsRequest 请求 {@link WsRequest}
-     * @param text 消息 {@link String}
+     * @param data 消息 {@link T}
      * @param channelContext 通道上下文 {@link ChannelContext}
      */
-    public abstract void onMessage(WsRequest wsRequest, String text, ChannelContext channelContext);
+    public abstract void onMessage(WsRequest wsRequest, T data, ChannelContext channelContext);
 
     /**
      * 字节消息 {@link WsRequest}
@@ -100,7 +103,7 @@ public abstract class AbstractHandler implements LeagueHandler, ApplicationConte
      * @return {@link Object}
      */
     @Override
-    public Object onText(WsRequest wsRequest, String text, ChannelContext channelContext) {
+    public T onText(WsRequest wsRequest, String text, ChannelContext channelContext) {
         WsSessionContext wsSessionContext = (WsSessionContext) channelContext.get();
         //获取websocket握手包
         HttpRequest httpRequest = wsSessionContext.getHandshakeRequest();
@@ -109,7 +112,7 @@ public abstract class AbstractHandler implements LeagueHandler, ApplicationConte
         }
         Package pak;
         try {
-            pak = JSON.parseObject(text, Package.class);
+            pak = parseObject(text, Package.class);
         } catch (Exception e) {
             log.error("解析网络包异常,userId: {}, package: {}", channelContext.userid, text);
             throw new RuntimeException(e);
@@ -121,12 +124,12 @@ public abstract class AbstractHandler implements LeagueHandler, ApplicationConte
 
         }
         MessageType type = pak.getType();
-        LeagueHandler leagueHandler = getMessageHandler(type);
+        LeagueHandler<T> leagueHandler = getMessageHandler(type);
         if(null == leagueHandler){
             log.warn("消息类型: {}, 没有找到合适的消息处理器", type.name());
             return null;
         }
-        leagueHandler.onMessage(wsRequest, text, channelContext);
+        leagueHandler.onMessage(wsRequest, parseObject(pak.getData(), getClassType(leagueHandler.getClass())), channelContext);
         return null;
     }
 
@@ -135,12 +138,12 @@ public abstract class AbstractHandler implements LeagueHandler, ApplicationConte
      * @param type 消息类型 {@link MessageType}
      * @return {@link LeagueHandler} 消息处理器
      */
-    private LeagueHandler getMessageHandler(MessageType type) {
+    private LeagueHandler<T> getMessageHandler(MessageType type) {
         //如果没有初始化，那么就初始化
         if (leagueHandlerConcurrentMap.isEmpty()) {
             Map<String, LeagueHandler> beansOfType = this.applicationContext.getBeansOfType(LeagueHandler.class);
             beansOfType.forEach((key, value) -> {
-                LeagueHandler leagueHandler = beansOfType.get(key);
+                LeagueHandler<T> leagueHandler = beansOfType.get(key);
                 Pair<HandlerType, MessageType> handlerType = leagueHandler.getHandlerType();
                 if(null != handlerType && null != handlerType.getValue()){
                     leagueHandlerConcurrentMap.put(handlerType.getValue(), leagueHandler);
@@ -148,6 +151,19 @@ public abstract class AbstractHandler implements LeagueHandler, ApplicationConte
             });
         }
         return leagueHandlerConcurrentMap.get(type);
+    }
+
+    /**
+     * 获取泛型类型
+     * @return {@link Class<T>}
+     */
+    public Class<T> getClassType(Class<?> clazz) {
+        Type type = clazz.getGenericSuperclass();
+        if (type instanceof ParameterizedType) {
+            ParameterizedType parameterizedType = (ParameterizedType) type;
+            return (Class<T>) parameterizedType.getActualTypeArguments()[0];
+        }
+        return null;
     }
 
     @Override

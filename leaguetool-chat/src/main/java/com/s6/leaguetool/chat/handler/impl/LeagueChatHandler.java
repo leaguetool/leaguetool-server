@@ -40,7 +40,7 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 @Component
 @RequiredArgsConstructor
-public class LeagueChatHandler extends AbstractHandler {
+public class LeagueChatHandler extends AbstractHandler<ChatMessage> {
 
     //创建日志工厂
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(LeagueChatHandler.class);
@@ -67,25 +67,21 @@ public class LeagueChatHandler extends AbstractHandler {
     /**
      * 处理消息
      * @param wsRequest 请求 {@link WsRequest}
-     * @param text 消息 {@link String}
+     * @param data 消息 {@link ChatMessage}
      * @param channelContext 通道上下文 {@link ChannelContext}
      */
     @Override
-    public void onMessage(WsRequest wsRequest, String text, ChannelContext channelContext) {
-        //聊天
-        Package pack = JSON.parseObject(text, Package.class);
-        ChatMessage chatMessage = JSON.parseObject(pack.getData(), ChatMessage.class);
-
+    public void onMessage(WsRequest wsRequest, ChatMessage data, ChannelContext channelContext) {
         //如果检测账号异常，那么就不继续往下处理
-        boolean checkUserStatus = checkUserStatus(chatMessage.getUid());
+        boolean checkUserStatus = checkUserStatus(data.getUid());
         if(checkUserStatus) {
-            log.info("{}处理器, 消息未发出, 原因是: [{}]账号状态异常 ", this.getHandlerType().getValue().name(), chatMessage.getUid());
+            log.info("{}处理器, 消息未发出, 原因是: [{}]账号状态异常 ", this.getHandlerType().getValue().name(), data.getUid());
             return;
         }
         //处理聊天信息并且发送
-        chatInformationProcess(pack, chatMessage, channelContext);
+        chatInformationProcess(new Package(), data, channelContext);
         //保存数据
-        chatUtils.saveMessage(chatMessage);
+        chatUtils.saveMessage(data);
     }
 
     /**
@@ -134,6 +130,7 @@ public class LeagueChatHandler extends AbstractHandler {
         //处理表情包
         emojiParse(chatMessage);
         chatMessage.setId(IdUtil.objectId());
+        pack.setType(MessageType.CHAT);
         pack.setData(JSON.toJSONString(chatMessage));
         WsResponse wsResponse = WsResponse.fromText(JSON.toJSONString(pack), LeagueServerConfig.CHARSET);
         //群发
@@ -187,4 +184,6 @@ public class LeagueChatHandler extends AbstractHandler {
         });
         chatMessage.setContent(content.get());
     }
+
+
 }

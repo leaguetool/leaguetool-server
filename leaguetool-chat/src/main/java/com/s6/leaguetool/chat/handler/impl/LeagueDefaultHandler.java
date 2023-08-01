@@ -1,5 +1,6 @@
 package com.s6.leaguetool.chat.handler.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.s6.leaguetool.chat.commen.ChatUtils;
 import com.s6.leaguetool.chat.handler.AbstractHandler;
 import com.s6.leaguetool.chat.packages.enums.HandlerType;
@@ -22,11 +23,11 @@ import org.tio.websocket.common.WsRequest;
  * 消息分发器用来分发消息给其他handler处理, 默认处理器只处理握手包
  * 握手包 {@link LeagueDefaultHandler#handshake(HttpRequest, HttpResponse, ChannelContext)}
  * 握手后 {@link LeagueDefaultHandler#onAfterHandshaked(HttpRequest, HttpResponse, ChannelContext)}
- * 分发消息处理器 {@link LeagueDefaultHandler#onMessage(WsRequest, String, ChannelContext)}
+ * 分发消息处理器 {@link LeagueDefaultHandler#onMessage(WsRequest, JSONObject, ChannelContext)}
  */
 @Component
 @RequiredArgsConstructor
-public class LeagueDefaultHandler extends AbstractHandler {
+public class LeagueDefaultHandler extends AbstractHandler<JSONObject> {
 
     private final ChatUtils chatUtils;
 
@@ -46,11 +47,11 @@ public class LeagueDefaultHandler extends AbstractHandler {
     /**
      * 这里不需要处理消息, 因为默认处理器只处理握手包
      * @param wsRequest 请求 {@link WsRequest}
-     * @param text 消息 {@link String}
+     * @param data 消息 {@link Void}
      * @param channelContext 通道上下文 {@link ChannelContext}
      */
     @Override
-    public void onMessage(WsRequest wsRequest, String text, ChannelContext channelContext) {}
+    public void onMessage(WsRequest wsRequest, JSONObject data, ChannelContext channelContext) {}
 
     /**
      * 握手包
