@@ -20,13 +20,30 @@ public class BaseController {
 
     private final ChatSetting chatSetting;
 
+    /**
+     * 获取公告
+     * @return 公告
+     */
     @GetMapping("getNotice")
     public R<String> getNotice(){
         return R.success(notice);
     }
 
+    /**
+     * 获取emoji
+     * @return emoji
+     */
     @GetMapping("getEmoji")
     public R<List<Emoji>> getEmoji(){
         return R.success(chatSetting.getEmoji());
+    }
+
+    /**
+     * 获取chat配置
+     * @return chat配置
+     */
+    @GetMapping("getSetting")
+    public R<ChatSetting> getSetting(){
+        return R.success(chatSetting);
     }
 }
