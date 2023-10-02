@@ -1,5 +1,5 @@
 # 基础镜像，openjkd使用8版本
-FROM openjdk:8
+FROM --platform=linux/amd64,linux/arm64/v8 openjdk:8
 # 作者
 MAINTAINER lemon
 # 设定时区
