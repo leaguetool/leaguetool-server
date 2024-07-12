@@ -4,13 +4,13 @@ server:
 spring:
   datasource:
     druid:
-      url: jdbc:mysql://61.171.105.217:3306/leaguetool?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8&autoReconnect=true&useSSL=true&allowMultiQueries=true
+      url: jdbc:mysql://mysql:3306/leaguetool?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8&autoReconnect=true&useSSL=true&allowMultiQueries=true
       username: root
       password: cailong520
 
 nacos:
   config:
-    server-addr: 61.171.105.217
+    server-addr: nacosio
     #允许nacos上的配置优先于本地配置
     remote-first: true
     bootstrap:
